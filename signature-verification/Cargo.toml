@@ -1,0 +1,16 @@
+[workspace]
+members = ["verification-script"]
+resolver = "2"
+
+[workspace.package]
+authors = ["Fuel Labs <contact@fuel.sh>"]
+version = "0.1.0"
+edition = "2021"
+homepage = "https://fuel.network"
+license = "Apache-2.0"
+repository = "https://github.com/FuelLabs/Solana-Wallet-Connector"
+
+[workspace.dependencies]
+fuels = { version = "0.55.0", features = ["fuel-core-lib"] }
+tokio = { version = "1.12", features = ["rt", "macros"] }
+solana-sdk = { version = "1.18.2" }
