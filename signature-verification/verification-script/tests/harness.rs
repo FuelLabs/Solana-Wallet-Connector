@@ -1,7 +1,11 @@
 use fuels::{
-    prelude::{abigen, launch_provider_and_get_wallet},
-}
-use solana::account::create_account_for_test;
+    prelude::{abigen, launch_provider_and_get_wallet}, tx::Witness, types::{transaction::{Transaction, TxPolicies}, Bits256}
+};
+use solana_sdk::{
+    signer::{keypair::Keypair, Signer},
+};
+
+const SCRIPT_BINARY_PATH: &str = "./out/debug/verification-script.bin";
 
 abigen!(Script(
     name = "MyScript",
@@ -12,13 +16,50 @@ abigen!(Script(
 async fn valid_signature_returns_true_for_validating() {
     let fuel_wallet = launch_provider_and_get_wallet().await.unwrap();
 
-    let fuel_provider = fuel_wallet.provider().unwrap();
-
     // Create solana wallet
-    let solana_account = create_account_for_test();
-    let solana_address = solana_account.owner;
+    let solana_keypair = Keypair::new();
+    let solana_address = solana_keypair.pubkey();
 
     // Create the predicate by setting the signer and pass in the witness agrument
     let witness_index = 1;
-    let configurables = MyScriptConfigurables::new().with_SIGNER()
+    let configurables = MyScriptConfigurables::new().with_SIGNER(Bits256(solana_address.to_bytes()));
+
+    let script_call_handler = MyScript::new(fuel_wallet.clone(), SCRIPT_BINARY_PATH)
+        .with_configurables(configurables)
+        .main(witness_index)
+        .with_tx_policies(TxPolicies::default().with_witness_limit(144).with_script_gas_limit(10000000));
+
+    let mut tx = script_call_handler.build_tx().await.unwrap();
+
+    // Now that we have the tx the solana wallet must sign the ID
+    let consensus_parameters = fuel_wallet.provider().unwrap().consensus_parameters();
+    let tx_id = tx.id(consensus_parameters.chain_id);
+
+    let signature = solana_keypair.sign_message(&(*tx_id));
+    let signature: [u8; 64] = signature.into();
+
+    // Add the signed data as a witness onto the tx
+    tx.append_witness(Witness::from(signature.to_vec())).unwrap();
+
+    // Execute the tx
+    let tx_id = fuel_wallet
+        .provider()
+        .unwrap()
+        .send_transaction(tx)
+        .await
+        .unwrap();
+
+    let receipts = fuel_wallet
+        .provider()
+        .unwrap()
+        .tx_status(&tx_id)
+        .await
+        .unwrap()
+        .take_receipts();
+
+    let response = script_call_handler.get_response(receipts).unwrap();
+
+    println!("response {:?}", response);
+
+    assert!(response.value);
 }
