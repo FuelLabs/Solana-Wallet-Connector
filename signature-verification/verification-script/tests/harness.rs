@@ -19,6 +19,7 @@ async fn valid_signature_returns_true_for_validating() {
     // Create solana wallet
     let solana_keypair = Keypair::new();
     let solana_address = solana_keypair.pubkey();
+    println!("solana_address {:?}", Bits256(solana_address.to_bytes()));
 
     // Create the predicate by setting the signer and pass in the witness agrument
     let witness_index = 1;
@@ -34,9 +35,12 @@ async fn valid_signature_returns_true_for_validating() {
     // Now that we have the tx the solana wallet must sign the ID
     let consensus_parameters = fuel_wallet.provider().unwrap().consensus_parameters();
     let tx_id = tx.id(consensus_parameters.chain_id);
+    println!("tx_id {:?}", Bits256(*tx_id));
 
     let signature = solana_keypair.sign_message(&(*tx_id));
     let signature: [u8; 64] = signature.into();
+
+    println!("signature {:?}", signature);
 
     // Add the signed data as a witness onto the tx
     tx.append_witness(Witness::from(signature.to_vec())).unwrap();
@@ -59,7 +63,7 @@ async fn valid_signature_returns_true_for_validating() {
 
     let response = script_call_handler.get_response(receipts).unwrap();
 
-    println!("response {:?}", response);
+    println!("response.decode_logs() {:?}", response.decode_logs());
 
     assert!(response.value);
 }
