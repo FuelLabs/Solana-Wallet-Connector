@@ -1,2 +1,2 @@
 [workspace]
-members = ["verification-script"]
+members = ["verification-predicate", "verification-script"]

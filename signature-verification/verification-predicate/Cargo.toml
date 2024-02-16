@@ -1,0 +1,17 @@
+[package]
+name = "verification-predicate"
+version = { workspace = true }
+edition = { workspace = true }
+authors = { workspace = true }
+license = { workspace = true }
+repository = { workspace = true }
+
+[dev-dependencies]
+solana-sdk = { workspace = true }
+fuels = { workspace = true }
+tokio = { workspace = true }
+
+[[test]]
+harness = true
+name = "integration_tests"
+path = "tests/harness.rs"
