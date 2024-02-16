@@ -8,8 +8,6 @@ use std::{
         tx_witness_data,
     },
     ecr::{ed_verify, EcRecoverError},
-    hash::*,
-    logging::log,
 };
 
 configurable {
