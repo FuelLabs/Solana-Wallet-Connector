@@ -21,6 +21,7 @@ solana-sdk = { version = "1.17.22" }
 #
 # For curve25519-dalek we’re using commit from a PR, see
 # https://github.com/dalek-cryptography/curve25519-dalek/pull/606
+# https://github.com/solana-labs/solana/issues/26688
 [patch.crates-io.curve25519-dalek]
 git = "https://github.com/solana-labs/curve25519-dalek.git"
 rev = "c14774464c4d38de553c6ef2f48a10982c1b4801"

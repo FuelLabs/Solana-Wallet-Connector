@@ -32,7 +32,6 @@ async fn valid_signature_returns_true_for_validating() {
     // Now that we have the tx the solana wallet must sign the ID
     let consensus_parameters = fuel_wallet.provider().unwrap().consensus_parameters();
     let tx_id = tx.id(consensus_parameters.chain_id);
-    println!("tx_id {:?}", Bits256(*tx_id));
 
     let signature = solana_keypair.sign_message(&(*tx_id));
     let signature: [u8; 64] = signature.into();
@@ -83,7 +82,6 @@ async fn invalid_signature_returns_false_for_failed_validation() {
     // Now that we have the tx the solana wallet must sign the ID
     let consensus_parameters = fuel_wallet.provider().unwrap().consensus_parameters();
     let tx_id = tx.id(consensus_parameters.chain_id);
-    println!("tx_id {:?}", Bits256(*tx_id));
 
     let signature = solana_keypair.sign_message(&(*tx_id));
     let mut signature: [u8; 64] = signature.into();
