@@ -68,7 +68,7 @@ async fn invalid_signature_returns_false_for_failed_validation() {
     let solana_keypair = Keypair::new();
     let solana_address = solana_keypair.pubkey();
 
-    // Create the predicate by setting the signer and pass in the witness agrument
+    // Create the script by setting the signer and pass in the witness argument
     let witness_index = 1;
     let configurables = MyScriptConfigurables::new().with_SIGNER(Bits256(solana_address.to_bytes()));
 
