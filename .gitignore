@@ -1,3 +1,9 @@
 target
 out
 */*.lock
+
+node_modules
+cache
+dist
+
+.turbo
