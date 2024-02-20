@@ -1,16 +1,23 @@
 {
   "extends": "@fuels/ts-config/base.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["DOM", "ES2022"],
-    "module": "es2022",
-    "moduleResolution": "Node",
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "declaration": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "outDir": "./dist"
-  },
-  "exclude": ["./dist/**/*"]
+      //"target": "ES2022",
+      //"lib": ["DOM", "ES2022"],
+      //"module": "ES2022",
+      //"moduleResolution": "Bundler",
+      "noUncheckedIndexedAccess": true,
+      "declaration": true,
+      "outDir": "./dist",
+  }
+  // "ts-node": {
+  //   "transpileOnly": true,
+  //   "compilerOptions": {
+  //     "module": "ESNext",
+  //     "esModuleInterop": true
+  //   },
+  //   "esm": true // <--- this is the most important part
+  // },
+  // "exclude": [
+  //     "./dist/**/*"
+  // ]
 }

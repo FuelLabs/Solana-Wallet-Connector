@@ -222,7 +222,7 @@ export class SolanaWalletConnector extends FuelConnector {
       throw Error('No connected accounts');
     }
 
-    const { solanaProvider, fuelProvider } = await this.getProviders();
+    const { solanaProvider } = await this.getProviders();
     const solanaAccount = solanaProvider.publicKey;
 
     const fuelAccount = getPredicateAddress(

@@ -29,6 +29,12 @@ importers:
       '@solana/web3.js':
         specifier: ^1.90.0
         version: 1.90.0
+      '@types/bs58':
+        specifier: ^4.0.4
+        version: 4.0.4
+      bs58:
+        specifier: ^5.0.0
+        version: 5.0.0
       fuels:
         specifier: ^0.73.0
         version: 0.73.0
@@ -55,8 +61,8 @@ importers:
         specifier: ^0.73.0
         version: 0.73.0
       '@fuels/ts-config':
-        specifier: ^0.1.4
-        version: 0.1.5(typescript@5.2.2)
+        specifier: ^0.15.2
+        version: 0.15.2(typescript@5.2.2)
       '@types/chai':
         specifier: ^4.3.11
         version: 4.3.11
@@ -70,7 +76,7 @@ importers:
         specifier: ^10.0.6
         version: 10.0.6
       '@types/node':
-        specifier: ^20.10.5
+        specifier: ^20.11.9
         version: 20.11.19
       chai:
         specifier: ^4.3.10
@@ -79,7 +85,7 @@ importers:
         specifier: ^7.1.1
         version: 7.1.1(chai@4.4.1)
       mocha:
-        specifier: ^10.2.0
+        specifier: ^10.3.0
         version: 10.3.0
       prettier:
         specifier: ^3.1.1
@@ -747,8 +753,8 @@ packages:
       prettier: 3.2.5
     dev: true
 
-  /@fuels/ts-config@0.1.5(typescript@5.2.2):
-    resolution: {integrity: sha512-jToW9lfzygYjpMh9AL7bwhqXM8AoCEYm/jotQPuTq4CPPo2+yvpt2dgr2HRcmW9xsoc78EuafzbK77uQDwIFMQ==}
+  /@fuels/ts-config@0.15.2(typescript@5.2.2):
+    resolution: {integrity: sha512-LEI8qCNiYu0uFQBhIGB2p4dgFCEoFnVmHiXonDBmzlM7oxe/eMiAb4CsqqWspeULitHrpvvOKzIL+Ui/P30+LA==}
     peerDependencies:
       typescript: 5.2.2
     dependencies:
@@ -1116,6 +1122,13 @@ packages:
     resolution: {integrity: sha512-V46N0zwKRF5Q00AZ6hWtN0T8gGmDUaUzLWQvHFo5yThtVwK/VCenFY3wXVbOvNfajEpsTfQM4IN9k/d6gUVX3A==}
     dependencies:
       '@types/node': 20.11.19
+
+  /@types/bs58@4.0.4:
+    resolution: {integrity: sha512-0IEpMFXXQi2zXaXl9GJ3sRwQo0uEkD+yFOv+FnAU5lkPtcu6h61xb7jc2CFPEZ5BUOaiP13ThuGc9HD4R8lR5g==}
+    dependencies:
+      '@types/node': 20.11.19
+      base-x: 3.0.9
+    dev: false
 
   /@types/chai-as-promised@7.1.8:
     resolution: {integrity: sha512-ThlRVIJhr69FLlh6IctTXFkmhtP3NpMZ2QGq69StYLyKZFp/HOp1VdKZj7RvfNWYYcJ1xlbLGLLWj1UvP5u/Gw==}
@@ -1575,6 +1588,10 @@ packages:
       safe-buffer: 5.2.1
     dev: false
 
+  /base-x@4.0.0:
+    resolution: {integrity: sha512-FuwxlW4H5kh37X/oW59pwTzzTKRzfrrQwhmyspRM7swOEZcHtDZSCt45U6oKgtuFE+WYPblePMVIPR4RZrh/hw==}
+    dev: false
+
   /base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
     dev: false
@@ -1672,6 +1689,12 @@ packages:
     resolution: {integrity: sha512-Ok3Wdf5vOIlBrgCvTq96gBkJw+JUEzdBgyaza5HLtPm7yTHkjRy8+JzNyHF7BHa0bNWOQIp3m5YF0nnFcOIKLw==}
     dependencies:
       base-x: 3.0.9
+    dev: false
+
+  /bs58@5.0.0:
+    resolution: {integrity: sha512-r+ihvQJvahgYT50JD05dyJNKlmmSlMoOGwn1lCcEzanPglg7TxYjioQUYehQ9mAR/+hOSd2jRc/Z2y5UxBymvQ==}
+    dependencies:
+      base-x: 4.0.0
     dev: false
 
   /buffer-from@1.1.2:
