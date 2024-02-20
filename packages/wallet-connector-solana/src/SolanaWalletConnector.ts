@@ -50,7 +50,6 @@ export class SolanaWalletConnector extends FuelConnector {
                 } else {
                     this.solanaProvider = new Connection(clusterApiUrl(this.config.solanaProvider));
                 }
-
                 if (!this.solanaProvider) {
                     throw new Error("Solana provider not found");
                 }
