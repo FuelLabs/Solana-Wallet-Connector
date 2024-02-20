@@ -10,7 +10,7 @@ const predicates = ['verification-predicate'];
 let code = 'export const predicates = {\n';
 
 predicates.forEach((predicate) => {
-  const outputDirectory =  `${__dirname}/../signature-verification/${predicate}/out/debug`;
+  const outputDirectory = `${__dirname}/../signature-verification/${predicate}/out/debug`;
   const abiPath = `${outputDirectory}/${predicate}-abi.json`;
   const bytecodePath = `${outputDirectory}/${predicate}.bin`;
 
@@ -34,7 +34,7 @@ function base64ToUint8Array(base64: string) {
   }
   return bytes;
 }
-`
+`;
 
 fs.writeFileSync(`${__dirname}/src/predicateResources.ts`, code);
 console.log('Generated');

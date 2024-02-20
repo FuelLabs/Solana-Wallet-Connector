@@ -1,6 +1,6 @@
 // vite.config.js
-import { resolve } from 'path'
-import { defineConfig } from 'vite'
+import { resolve } from 'path';
+import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
 import path from 'path';
@@ -10,9 +10,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default defineConfig({
-  plugins: [dts({
-    include: [resolve(__dirname, 'src/')],
-})],
+  plugins: [
+    dts({
+      include: [resolve(__dirname, 'src/')],
+    }),
+  ],
   build: {
     lib: {
       // Could also be a dictionary or array of multiple entry points
@@ -22,4 +24,4 @@ export default defineConfig({
       fileName: 'wallet-connector-evm',
     },
   },
-})
+});
