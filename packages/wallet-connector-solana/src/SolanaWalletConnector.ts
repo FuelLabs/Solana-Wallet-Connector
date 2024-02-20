@@ -14,10 +14,10 @@ import {
   Provider,
   TransactionRequestLike,
   arrayify,
-  hashTransaction,
   hexlify,
   transactionRequestify,
-  AbiMap
+  AbiMap,
+  getPredicateRoot
 } from 'fuels';
 import memoize from 'memoizee';
 
@@ -103,16 +103,16 @@ export class SolanaWalletConnector extends FuelConnector {
 
   async setupEventBridge() {
     const { solanaProvider } = await this.getProviders();
-    solanaProvider.on('accountChanges', async (account) => {
+    solanaProvider.on('accountChanges', async (account: string | null) => {
       this.emit('accounts', await this.accounts());
       if (this._currentAccount !== account) {
         await this.setupCurrentAccount();
       }
     });
-    solanaProvider.on('connect', async (arg) => {
+    solanaProvider.on('connect', async () => {
       this.emit('connection', await this.isConnected());
     });
-    solanaProvider.on('disconnect', async (arg) => {
+    solanaProvider.on('disconnect', async () => {
       this.emit('connection', await this.isConnected());
     });
   }
@@ -196,7 +196,7 @@ export class SolanaWalletConnector extends FuelConnector {
     const requestWithPredicateAttached =
       predicate.populateTransactionPredicateData(transactionRequest);
 
-    const txId = hashTransaction(requestWithPredicateAttached, chainId);
+    const txId = requestWithPredicateAttached.getTransactionId(chainId);
     const signature = await solanaProvider.signMessage(txId);
 
     // We have a witness, attach it to the transaction for inspection / recovery via the predicate
@@ -227,7 +227,6 @@ export class SolanaWalletConnector extends FuelConnector {
 
     const fuelAccount = getPredicateAddress(
       solanaAccount,
-      fuelProvider.getChainId(),
       this.predicate.bytecode,
       this.predicate.abi
     );
@@ -291,15 +290,13 @@ export class SolanaWalletConnector extends FuelConnector {
       predicateAccount: string;
     }>
   > {
-    const { solanaProvider, fuelProvider } = await this.getProviders();
+    const { solanaProvider } = await this.getProviders();
     const solanaAccount = solanaProvider.publicKey;
-    const chainId = fuelProvider.getChainId();
     const accounts = [
       {
         solanaAccount,
         predicateAccount: getPredicateAddress(
           solanaAccount,
-          chainId,
           this.predicate.bytecode,
           this.predicate.abi
         ),
@@ -312,7 +309,6 @@ export class SolanaWalletConnector extends FuelConnector {
 export const getPredicateAddress = memoize(
   (
     solanaAddress: string,
-    chainId: number,
     predicateBytecode: BytesLike,
     predicateAbi: JsonAbi
   ): string => {
@@ -326,7 +322,7 @@ export const getPredicateAddress = memoize(
       predicateAbi,
       configurable
     );
-    const address = Address.fromB256(getPredicateRoot(predicateBytes, chainId));
+    const address = Address.fromB256(getPredicateRoot(predicateBytes));
     return address.toString();
   }
 );
