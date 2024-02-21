@@ -20,12 +20,12 @@ importers:
 
   examples/solana-connector:
     dependencies:
-      '@fuel-wallet/react':
-        specifier: 0.15.2
-        version: 0.15.2(@types/react-dom@18.2.19)(@types/react@18.2.57)(fuels@0.74.0)(react-dom@18.2.0)(react@18.2.0)
       '@fuel-wallet/sdk':
         specifier: 0.15.2
         version: 0.15.2(dexie@3.2.5)(fuels@0.74.0)
+      '@fuels/react':
+        specifier: 0.15.2
+        version: 0.15.2(@types/react-dom@18.2.19)(@types/react@18.2.57)(fuels@0.74.0)(react-dom@18.2.0)(react@18.2.0)
       '@fuels/wallet-connector-solana':
         specifier: workspace:*
         version: link:../../packages/wallet-connector-solana
@@ -89,6 +89,9 @@ importers:
       memoizee:
         specifier: ^0.4.15
         version: 0.4.15
+      uint8array-tools:
+        specifier: ^0.0.7
+        version: 0.0.7
     devDependencies:
       '@fuels/ts-config':
         specifier: ^0.15.2
@@ -2288,24 +2291,6 @@ packages:
       cli-table: 0.3.11
     dev: false
 
-  /@fuel-wallet/react@0.15.2(@types/react-dom@18.2.19)(@types/react@18.2.57)(fuels@0.74.0)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-cJPidiRSSZM2jV4bHgvQl7EOTnNde7Lx7+49Hxs7hr53eleS5Otd8yY3grgWDWL0D4wiSLZkrUM+U2SH9ScENg==}
-    peerDependencies:
-      fuels: '>=0.73.0'
-      react: ^18.2.0
-    dependencies:
-      '@radix-ui/react-dialog': 1.0.5(@types/react-dom@18.2.19)(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0)
-      '@tanstack/react-query': 4.36.1(react-dom@18.2.0)(react@18.2.0)
-      events: 3.3.0
-      fuels: 0.74.0(dexie@3.2.5)
-      react: 18.2.0
-    transitivePeerDependencies:
-      - '@types/react'
-      - '@types/react-dom'
-      - react-dom
-      - react-native
-    dev: false
-
   /@fuel-wallet/sdk@0.15.2(dexie@3.2.5)(fuels@0.74.0):
     resolution: {integrity: sha512-hUrCNpWqso968h8oExhVCWp8lOgAR0ZA1dkv7/bOYT+HEpWebl90GjJ2q2xx6+ijq4WrRJi8fIDVgnB7+LD+mw==}
     peerDependencies:
@@ -2343,6 +2328,24 @@ packages:
     dependencies:
       prettier: 3.2.5
     dev: true
+
+  /@fuels/react@0.15.2(@types/react-dom@18.2.19)(@types/react@18.2.57)(fuels@0.74.0)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-5RfPMEfK/cuO6DejDcnc9eg6TaxPpfczJ6yUCCEtp3wZVdd1bCEuarzUip6xeJoGityjIN5QduEjv+JnAV20pQ==}
+    peerDependencies:
+      fuels: '>=0.74.0'
+      react: ^18.2.0
+    dependencies:
+      '@radix-ui/react-dialog': 1.0.5(@types/react-dom@18.2.19)(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0)
+      '@tanstack/react-query': 4.36.1(react-dom@18.2.0)(react@18.2.0)
+      events: 3.3.0
+      fuels: 0.74.0(dexie@3.2.5)
+      react: 18.2.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - '@types/react-dom'
+      - react-dom
+      - react-native
+    dev: false
 
   /@fuels/ts-config@0.15.2(typescript@5.2.2):
     resolution: {integrity: sha512-LEI8qCNiYu0uFQBhIGB2p4dgFCEoFnVmHiXonDBmzlM7oxe/eMiAb4CsqqWspeULitHrpvvOKzIL+Ui/P30+LA==}
@@ -12838,6 +12841,11 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
+
+  /uint8array-tools@0.0.7:
+    resolution: {integrity: sha512-vrrNZJiusLWoFWBqz5Y5KMCgP9W9hnjZHzZiZRT8oNAkq3d5Z5Oe76jAvVVSRh4U8GGR90N2X1dWtrhvx6L8UQ==}
+    engines: {node: '>=14.0.0'}
+    dev: false
 
   /unbox-primitive@1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}

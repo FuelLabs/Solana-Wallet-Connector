@@ -1,13 +1,13 @@
 {
   "extends": "@fuels/ts-config/base.json",
   "compilerOptions": {
-      //"target": "ES2022",
-      //"lib": ["DOM", "ES2022"],
-      //"module": "ES2022",
-      //"moduleResolution": "Bundler",
-      "noUncheckedIndexedAccess": true,
-      "declaration": true,
-      "outDir": "./dist",
+    //"target": "ES2022",
+    //"lib": ["DOM", "ES2022"],
+    //"module": "ES2022",
+    //"moduleResolution": "Bundler",
+    "noUncheckedIndexedAccess": true,
+    "declaration": true,
+    "outDir": "./dist"
   }
   // "ts-node": {
   //   "transpileOnly": true,

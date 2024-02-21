@@ -19,7 +19,11 @@ import {
 import { launchNodeAndGetWallets } from '@fuel-ts/account/test-utils';
 
 import { MockProvider } from './mockProvider';
-import { SolanaWalletConnector, createPredicate, getPredicateAddress } from '../src/index';
+import {
+  SolanaWalletConnector,
+  createPredicate,
+  getPredicateAddress,
+} from '../src/index';
 import { predicates } from '../src/predicateResources';
 
 chai.use(chaiAsPromised);
@@ -50,14 +54,14 @@ describe('Solana Wallet Connector', () => {
   before(async () => {
     process.env.GENESIS_SECRET =
       '0x6e48a022f9d4ae187bca4e2645abd62198ae294ee484766edbdaadf78160dc68';
-    console.log(path.join(__dirname, "/chainConfig.json"));
+    console.log(path.join(__dirname, '/chainConfig.json'));
     const { stop, provider } = await launchNodeAndGetWallets({
       launchNodeOptions: {
         debugEnabled: true,
-        args: ['--chain', path.join(__dirname, "/chainConfig.json")]
+        args: ['--chain', path.join(__dirname, '/chainConfig.json')],
       },
     });
-    console.log("two");
+    console.log('two');
     fuelProvider = provider;
     stopProvider = stop;
   });
@@ -184,14 +188,14 @@ describe('Solana Wallet Connector', () => {
       await fundingWallet
         .transfer(predicate.address, 1_000_000, BaseAssetId, {
           gasLimit: 10000,
-          gasPrice: 1
+          gasPrice: 1,
         })
         .then((resp) => resp.wait());
       // Transfer alt asset coins to predicate
       await fundingWallet
         .transfer(predicate.address, 1_000_000, ALT_ASSET_ID, {
           gasLimit: 10000,
-          gasPrice: 1
+          gasPrice: 1,
         })
         .then((resp) => resp.wait());
 
@@ -215,7 +219,7 @@ describe('Solana Wallet Connector', () => {
       // Create transfer from predicate to recipient
       const transactionRequest = new ScriptTransactionRequest({
         gasLimit: 10000,
-        gasPrice: 1
+        gasPrice: 1,
       });
       transactionRequest.addCoinOutput(
         recipientWallet.address,
@@ -227,12 +231,12 @@ describe('Solana Wallet Connector', () => {
       const resources = await predicate.getResourcesToSpend([
         {
           assetId: BaseAssetId,
-          amount: bn(1_000_000)
+          amount: bn(1_000_000),
         },
         {
           assetId: ALT_ASSET_ID,
-          amount: bn(1_000_000)
-        }
+          amount: bn(1_000_000),
+        },
       ]);
       transactionRequest.addResources(resources);
 
@@ -274,14 +278,14 @@ describe('Solana Wallet Connector', () => {
       await fundingWallet
         .transfer(predicate.address, 1_000_000, BaseAssetId, {
           gasLimit: 10000,
-          gasPrice: 1
+          gasPrice: 1,
         })
         .then((resp) => resp.wait());
       // Transfer alt asset coins to predicate
       await fundingWallet
         .transfer(predicate.address, 1_000_000, ALT_ASSET_ID, {
           gasLimit: 10000,
-          gasPrice: 1
+          gasPrice: 1,
         })
         .then((resp) => resp.wait());
 
@@ -305,7 +309,7 @@ describe('Solana Wallet Connector', () => {
       // Create transfer from predicate to recipient
       const transactionRequest = new ScriptTransactionRequest({
         gasLimit: 10000,
-        gasPrice: 1
+        gasPrice: 1,
       });
       transactionRequest.addCoinOutput(
         recipientWallet.address,
@@ -317,12 +321,12 @@ describe('Solana Wallet Connector', () => {
       const resources = await predicate.getResourcesToSpend([
         {
           assetId: BaseAssetId,
-          amount: bn(1_000_000)
+          amount: bn(1_000_000),
         },
         {
           assetId: ALT_ASSET_ID,
-          amount: bn(1_000_000)
-        }
+          amount: bn(1_000_000),
+        },
       ]);
       transactionRequest.addResources(resources);
 
@@ -530,7 +534,7 @@ describe('Solana Wallet Connector', () => {
         name: '',
         symbol: '',
         icon: '',
-        networks: []
+        networks: [],
       };
       expect(await connector.addAsset(asset)).to.be.false;
     });

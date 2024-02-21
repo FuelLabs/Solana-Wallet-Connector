@@ -20,15 +20,16 @@
     "test": "run-s build:resources && mocha --node-option experimental-loader=ts-node/esm --node-option experimental-specifier-resolution=node --require ts-node/register --require @fuel-ts/account --timeout 10000 ./test/*.test.ts"
   },
   "dependencies": {
+    "@fuel-ts/account": "0.74.0",
     "@fuel-wallet/sdk": "0.15.2",
     "@fuel-wallet/types": "0.15.2",
     "@solana/web3.js": "^1.90.0",
     "@types/bs58": "^4.0.4",
     "bs58": "^5.0.0",
     "fuels": "^0.74.0",
-    "@fuel-ts/account": "0.74.0",
     "json-rpc-2.0": "^1.7.0",
-    "memoizee": "^0.4.15"
+    "memoizee": "^0.4.15",
+    "uint8array-tools": "^0.0.7"
   },
   "devDependencies": {
     "@fuels/ts-config": "^0.15.2",

@@ -17,11 +17,13 @@ import {
   hexlify,
   transactionRequestify,
   AbiMap,
-  getPredicateRoot
+  getPredicateRoot,
 } from 'fuels';
 import memoize from 'memoizee';
 
 import { predicates } from './predicateResources';
+import { PublicKey } from '@solana/web3.js';
+import * as uint8arraytools from 'uint8array-tools';
 
 type SolanaWalletConnectorConfig = {
   fuelProvider?: Provider | string;
@@ -38,7 +40,7 @@ export class SolanaWalletConnector extends FuelConnector {
 
   // metadata placeholder
   metadata: ConnectorMetadata = {
-    image: '',
+    image: '', // TODO: add image of Solana or Phantom
     install: {
       action: 'Install',
       description: 'Install a solana wallet to connect to Fuel',
@@ -64,8 +66,8 @@ export class SolanaWalletConnector extends FuelConnector {
   async getProviders() {
     if (!this.fuelProvider || !this.solanaProvider) {
       if (typeof window !== undefined) {
-        this.solanaProvider = this.config.solanaProvider?.isPhantom;
-        if (!this.solanaProvider) {
+        this.solanaProvider = this.config.solanaProvider;
+        if (!this.solanaProvider?.isPhantom) {
           throw new Error('Solana provider not found');
         }
 
@@ -133,6 +135,7 @@ export class SolanaWalletConnector extends FuelConnector {
 
   async isConnected() {
     const accounts = await this.accounts();
+    console.log(`accounts`, accounts);
     return accounts.length > 0;
   }
 
@@ -147,6 +150,7 @@ export class SolanaWalletConnector extends FuelConnector {
       await solanaProvider.connect();
     }
     this.connected = true;
+    console.log('in connect');
     return true;
   }
 
@@ -291,17 +295,21 @@ export class SolanaWalletConnector extends FuelConnector {
     }>
   > {
     const { solanaProvider } = await this.getProviders();
-    const solanaAccount = solanaProvider.publicKey;
-    const accounts = [
-      {
-        solanaAccount,
-        predicateAccount: getPredicateAddress(
-          solanaAccount,
-          this.predicate.bytecode,
-          this.predicate.abi
-        ),
-      },
-    ];
+    const solanaAccounts: Array<string> = solanaProvider.publicKey
+      ? [
+          uint8arraytools.toHex(
+            (solanaProvider.publicKey as PublicKey).toBytes()
+          ),
+        ]
+      : [];
+    const accounts = solanaAccounts.map((account) => ({
+      solanaAccount: account,
+      predicateAccount: getPredicateAddress(
+        account,
+        this.predicate.bytecode,
+        this.predicate.abi
+      ),
+    }));
     return accounts;
   }
 }
@@ -313,7 +321,7 @@ export const getPredicateAddress = memoize(
     predicateAbi: JsonAbi
   ): string => {
     const configurable = {
-      SIGNER: solanaAddress,
+      SIGNER: `0x${solanaAddress}`,
     };
 
     // @ts-ignore

@@ -1,21 +1,17 @@
+import { useConnectUI, useDisconnect, useIsConnected } from '@fuels/react';
 import './App.css';
 
 function App() {
+  const { connect, isConnecting } = useConnectUI();
+  const { disconnect } = useDisconnect();
+  const { isConnected } = useIsConnected();
+
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button onClick={() => connect()}>
+        {isConnecting ? 'Connecting' : 'Connect'}
+      </button>
+      {isConnected && <button onClick={() => disconnect()}>Disconnect</button>}
     </div>
   );
 }

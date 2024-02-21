@@ -1,1 +1,1 @@
-export * from "./SolanaWalletConnector";
+export * from './SolanaWalletConnector';

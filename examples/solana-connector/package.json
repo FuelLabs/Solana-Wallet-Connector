@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@fuel-wallet/react": "0.15.2",
+    "@fuels/react": "0.15.2",
     "@fuel-wallet/sdk": "0.15.2",
     "@fuels/wallet-connector-solana": "workspace:*",
     "@types/node": "^16.18.68",
