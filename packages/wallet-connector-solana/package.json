@@ -17,7 +17,7 @@
     "build:resources": "tsx generatePredicateResources.ts",
     "build": "tsc && vite build",
     "fmt": "prettier --config .prettierrc 'src/*.ts' 'test/*.ts' --write",
-    "test": "run-s build:resources && mocha --node-option loader=ts-node/esm --node-option experimental-specifier-resolution=node --require ts-node/register ./test/*.test.ts"
+    "test": "run-s build:resources && mocha --node-option experimental-loader=ts-node/esm --node-option experimental-specifier-resolution=node --require ts-node/register --require @fuel-ts/account --timeout 10000 ./test/*.test.ts"
   },
   "dependencies": {
     "@fuel-wallet/sdk": "0.15.2",
@@ -25,16 +25,12 @@
     "@solana/web3.js": "^1.90.0",
     "@types/bs58": "^4.0.4",
     "bs58": "^5.0.0",
-    "fuels": "^0.73.0",
+    "fuels": "^0.74.0",
+    "@fuel-ts/account": "0.74.0",
     "json-rpc-2.0": "^1.7.0",
     "memoizee": "^0.4.15"
   },
   "devDependencies": {
-    "@fuel-ts/fuel-core": "^0.73.0",
-    "@fuel-ts/hasher": "^0.73.0",
-    "@fuel-ts/merkle": "^0.73.0",
-    "@fuel-ts/utils": "^0.73.0",
-    "@fuel-ts/wallet": "^0.73.0",
     "@fuels/ts-config": "^0.15.2",
     "@types/chai": "^4.3.11",
     "@types/chai-as-promised": "^7.1.8",

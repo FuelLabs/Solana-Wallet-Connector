@@ -16,7 +16,7 @@ import {
   ScriptTransactionRequest,
   WalletUnlocked,
 } from 'fuels';
-import { launchNodeAndGetWallets } from '@fuel-ts/wallet/test-utils';
+import { launchNodeAndGetWallets } from '@fuel-ts/account/test-utils';
 
 import { MockProvider } from './mockProvider';
 import { SolanaWalletConnector, createPredicate, getPredicateAddress } from '../src/index';
@@ -50,11 +50,14 @@ describe('Solana Wallet Connector', () => {
   before(async () => {
     process.env.GENESIS_SECRET =
       '0x6e48a022f9d4ae187bca4e2645abd62198ae294ee484766edbdaadf78160dc68';
+    console.log(path.join(__dirname, "/chainConfig.json"));
     const { stop, provider } = await launchNodeAndGetWallets({
       launchNodeOptions: {
-        args: ['--chain', `${__dirname}/chainConfig.json`]
+        debugEnabled: true,
+        args: ['--chain', path.join(__dirname, "/chainConfig.json")]
       },
     });
+    console.log("two");
     fuelProvider = provider;
     stopProvider = stop;
   });
