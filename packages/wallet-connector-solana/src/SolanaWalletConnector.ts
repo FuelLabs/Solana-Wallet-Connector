@@ -98,6 +98,12 @@ export class SolanaWalletConnector extends FuelConnector {
   }
 
   async setupCurrentAccount() {
+    const { solanaProvider } = await this.getProviders();
+    // This is needed to maintain connection between page refreshes
+    try {
+      // Throws an error if the user has not connected yet
+      await solanaProvider.connect({ onlyIfTrusted: true });
+    } catch (_) {}
     const [currentAccount = null] = await this.accounts();
     this._currentAccount = currentAccount;
     this.emit('currentAccount', currentAccount);
@@ -105,7 +111,7 @@ export class SolanaWalletConnector extends FuelConnector {
 
   async setupEventBridge() {
     const { solanaProvider } = await this.getProviders();
-    solanaProvider.on('accountChanges', async (account: string | null) => {
+    solanaProvider.on('accountChanged', async (account: string | null) => {
       this.emit('accounts', await this.accounts());
       if (this._currentAccount !== account) {
         await this.setupCurrentAccount();
@@ -135,10 +141,13 @@ export class SolanaWalletConnector extends FuelConnector {
 
   async isConnected() {
     const accounts = await this.accounts();
-    console.log(`accounts`, accounts);
     return accounts.length > 0;
   }
 
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // TODO: this only ever returns an array w/ a single account
+  // I do not know how to fetch all accounts from Phantom
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   async accounts() {
     const accounts = await this.getPredicateAccounts();
     return accounts.map((account) => account.predicateAccount);
@@ -150,7 +159,6 @@ export class SolanaWalletConnector extends FuelConnector {
       await solanaProvider.connect();
     }
     this.connected = true;
-    console.log('in connect');
     return true;
   }
 

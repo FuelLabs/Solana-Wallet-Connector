@@ -1,17 +1,31 @@
-import { useConnectUI, useDisconnect, useIsConnected } from '@fuels/react';
+import { useIsConnected } from '@fuels/react';
 import './App.css';
+import { ContractCounter } from './components/CounterContract';
+import { COUNTER_CONTRACT_ID } from './config';
+import { Connection } from './components/Connection';
+import { Info } from './components/Info';
+import { AccountItems } from './components/AccountItems';
 
 function App() {
-  const { connect, isConnecting } = useConnectUI();
-  const { disconnect } = useDisconnect();
   const { isConnected } = useIsConnected();
 
   return (
     <div className="App">
-      <button onClick={() => connect()}>
-        {isConnecting ? 'Connecting' : 'Connect'}
-      </button>
-      {isConnected && <button onClick={() => disconnect()}>Disconnect</button>}
+      <Connection />
+      <div>
+        <Info />
+        {isConnected && <AccountItems />}
+        <ContractCounter />
+        <div>
+          {isConnected && (
+            <>
+              <p>
+                Counter contract address: <b>{COUNTER_CONTRACT_ID}</b>
+              </p>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
