@@ -7,60 +7,20 @@ import {
   DEFAULT_ADDRESS,
   COUNTER_CONTRACT_ID,
 } from '../config';
+import { useTransfer } from '../hooks/useTransfer';
+import { useIncrement } from '../hooks/useIncrement';
 
 type AccountItemProps = {
   address: string;
 };
 
 export const AccountItem = ({ address }: AccountItemProps) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingCall, setIsLoadingCall] = useState(false);
   const { balance } = useBalance({ address });
-  const { wallet } = useWallet(address);
+  const transfer = useTransfer(address);
+  const increment = useIncrement(address);
 
   const hasBalance = balance && balance.gte(DEFAULT_AMOUNT);
 
-  async function transfer() {
-    setIsLoading(true);
-    try {
-      const receiverAddress = prompt('Receiver address', DEFAULT_ADDRESS);
-      const receiver = Address.fromString(receiverAddress || DEFAULT_ADDRESS);
-      const response = await wallet?.transfer(
-        receiver,
-        DEFAULT_AMOUNT,
-        BaseAssetId,
-        {
-          gasPrice: 1,
-          gasLimit: 10_000,
-        }
-      );
-      await response?.waitForResult();
-    } catch (err: any) {
-      alert(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  async function increment() {
-    if (wallet) {
-      setIsLoadingCall(true);
-      const contract = CounterContractAbi__factory.connect(
-        COUNTER_CONTRACT_ID,
-        wallet
-      );
-      try {
-        await contract.functions
-          .increment()
-          .txParams({ gasPrice: 1, gasLimit: 100_000 })
-          .call();
-      } catch (err: any) {
-        console.log(err.message);
-      } finally {
-        setIsLoadingCall(false);
-      }
-    }
-  }
 
   return (
     <div>
@@ -82,15 +42,15 @@ export const AccountItem = ({ address }: AccountItemProps) => {
           </a>
         )}
         <button
-          onClick={() => increment()}
-          disabled={isLoadingCall || !hasBalance}
+          onClick={() => increment.mutate()}
+          disabled={increment.isLoading || !hasBalance}
         >
-          {isLoadingCall
+          {increment.isLoading
             ? 'Incrementing...'
             : 'Increment the counter on the contract'}
         </button>
-        <button onClick={() => transfer()} disabled={isLoading || !hasBalance}>
-          {isLoading
+        <button onClick={() => transfer.mutate()} disabled={transfer.isLoading || !hasBalance}>
+          {transfer.isLoading
             ? 'Transferring...'
             : `Transfer ${DEFAULT_AMOUNT.format()} ETH`}
         </button>

@@ -4,6 +4,7 @@ import { AccountItem } from './AccountItem';
 
 export const AccountItems = () => {
   const { accounts } = useAccounts();
+  console.log(`accounts`, accounts);
 
   return (
     <div>

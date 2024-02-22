@@ -1,22 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { FuelProvider } from '@fuels/react';
-import { SolanaWalletConnector } from '@fuels/wallet-connector-solana';
 
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { Providers } from './components/Providers';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <FuelProvider
-      fuelConfig={{ devMode: true, connectors: [new SolanaWalletConnector()] }}
-    >
+    <Providers>
       <App />
-    </FuelProvider>
+    </Providers>
   </React.StrictMode>
 );
 

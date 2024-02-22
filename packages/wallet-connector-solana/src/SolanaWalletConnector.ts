@@ -105,6 +105,7 @@ export class SolanaWalletConnector extends FuelConnector {
       await solanaProvider.connect({ onlyIfTrusted: true });
     } catch (_) {}
     const [currentAccount = null] = await this.accounts();
+    console.log(`currentAccount`, currentAccount);
     this._currentAccount = currentAccount;
     this.emit('currentAccount', currentAccount);
   }
@@ -229,6 +230,9 @@ export class SolanaWalletConnector extends FuelConnector {
     return response.submit.id;
   }
 
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // TODO: const { account } = useAccount() returns null for a connected account
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   async currentAccount(): Promise<string | null> {
     if (!(await this.isConnected())) {
       throw Error('No connected accounts');
@@ -242,6 +246,8 @@ export class SolanaWalletConnector extends FuelConnector {
       this.predicate.bytecode,
       this.predicate.abi
     );
+
+    console.log(`fuelAccount`, fuelAccount);
 
     return fuelAccount;
   }
