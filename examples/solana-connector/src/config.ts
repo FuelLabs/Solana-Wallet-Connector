@@ -5,5 +5,5 @@ export const COUNTER_CONTRACT_ID =
 export const DEFAULT_ADDRESS = Address.fromRandom().toString();
 export const DEFAULT_AMOUNT = bn.parseUnits('0.001');
 export const DEMO_QUERY_KEYS = {
-  count: 'count'
+  count: 'count',
 };

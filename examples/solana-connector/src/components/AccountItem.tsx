@@ -1,12 +1,5 @@
-import { useBalance, useWallet } from '@fuels/react';
-import { Address, BaseAssetId } from 'fuels';
-import { useState } from 'react';
-import { CounterContractAbi__factory } from '../contracts';
-import {
-  DEFAULT_AMOUNT,
-  DEFAULT_ADDRESS,
-  COUNTER_CONTRACT_ID,
-} from '../config';
+import { useBalance } from '@fuels/react';
+import { DEFAULT_AMOUNT } from '../config';
 import { useTransfer } from '../hooks/useTransfer';
 import { useIncrement } from '../hooks/useIncrement';
 
@@ -20,7 +13,6 @@ export const AccountItem = ({ address }: AccountItemProps) => {
   const increment = useIncrement(address);
 
   const hasBalance = balance && balance.gte(DEFAULT_AMOUNT);
-
 
   return (
     <div>
@@ -42,8 +34,8 @@ export const AccountItem = ({ address }: AccountItemProps) => {
           </a>
         )}
         <button
-          onClick={() => increment.mutate()}
-          disabled={increment.isLoading || !hasBalance}
+        onClick={() => increment.mutate()}
+        disabled={increment.isLoading || !hasBalance}
         >
           {increment.isLoading
             ? 'Incrementing...'

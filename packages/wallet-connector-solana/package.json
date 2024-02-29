@@ -15,6 +15,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build:resources": "tsx generatePredicateResources.ts",
+    "build:script:resources": "tsx generateScriptResources.ts",
     "build": "tsc && vite build",
     "fmt": "prettier --config .prettierrc 'src/*.ts' 'test/*.ts' --write",
     "test": "run-s build:resources && mocha --node-option experimental-loader=ts-node/esm --node-option experimental-specifier-resolution=node --require ts-node/register --require @fuel-ts/account --timeout 10000 ./test/*.test.ts"
@@ -29,6 +30,8 @@
     "fuels": "^0.74.0",
     "json-rpc-2.0": "^1.7.0",
     "memoizee": "^0.4.15",
+    "tweetnacl": "^1.0.3",
+    "tweetnacl-util": "^0.15.1",
     "uint8array-tools": "^0.0.7"
   },
   "devDependencies": {
