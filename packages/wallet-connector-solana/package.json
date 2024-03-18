@@ -25,6 +25,7 @@
     "@fuel-wallet/sdk": "0.15.2",
     "@fuel-wallet/types": "0.15.2",
     "@solana/web3.js": "^1.90.0",
+    "@solflare-wallet/sdk": "^1.4.2",
     "@types/bs58": "^4.0.4",
     "bs58": "^5.0.0",
     "fuels": "^0.74.0",

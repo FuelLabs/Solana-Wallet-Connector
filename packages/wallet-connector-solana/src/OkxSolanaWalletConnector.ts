@@ -35,7 +35,7 @@ import memoize from 'memoizee';
 
 import { predicates } from './predicateResources';
 import { scripts } from "./scriptResources"
-import { Keypair, Message, PublicKey, Transaction, VersionedMessage, VersionedTransaction } from '@solana/web3.js';
+import { Keypair, PublicKey } from '@solana/web3.js';
 import * as uint8arraytools from 'uint8array-tools';
 import nacl from "tweetnacl";
 import { decodeBase64, decodeUTF8 } from "tweetnacl-util";
@@ -46,7 +46,7 @@ type SolanaWalletConnectorConfig = {
   solanaProvider?: any;
 };
 
-export class SolanaWalletConnector extends FuelConnector {
+export class OkxSolanaWalletConnector extends FuelConnector {
   solanaProvider: any | null = null;
   fuelProvider: Provider | null = null;
   //private predicate: { abi: any; bytecode: Uint8Array };
@@ -73,8 +73,9 @@ export class SolanaWalletConnector extends FuelConnector {
     this.installed = true;
     this.config = Object.assign(config, {
       fuelProvider: 'https://beta-5.fuel.network/graphql',
-      solanaProvider: (window as any).phantom?.solana,
+      solanaProvider: (window as any).okxwallet?.solana,
     });
+    console.log(`window`, (window as any).okxwallet?.solana);
   }
 
   /**
@@ -85,7 +86,7 @@ export class SolanaWalletConnector extends FuelConnector {
     if (!this.fuelProvider || !this.solanaProvider) {
       if (typeof window !== undefined) {
         this.solanaProvider = this.config.solanaProvider;
-        if (!this.solanaProvider?.isPhantom) {
+        if (!this.solanaProvider) {
           throw new Error('Solana provider not found');
         }
 
@@ -98,7 +99,7 @@ export class SolanaWalletConnector extends FuelConnector {
           throw new Error('Fuel provider not found');
         }
       } else {
-        throw new Error('window.phantom.solana not found');
+        throw new Error('window.okxwallet.solana not found');
       }
     }
 
@@ -116,14 +117,6 @@ export class SolanaWalletConnector extends FuelConnector {
   }
 
   async setupCurrentAccount() {
-    const { solanaProvider } = await this.getProviders();
-    // This is needed to maintain connection between page refreshes
-    try {
-      // Throws an error if the user has not connected yet
-      await solanaProvider.connect({ onlyIfTrusted: true });
-    } catch (err: any) {
-      console.log(`err`, err);
-    }
     const [currentAccount = null] = await this.accounts();
     this._currentAccount = currentAccount;
   }
@@ -288,6 +281,7 @@ export class SolanaWalletConnector extends FuelConnector {
     const accountFund = Wallet.fromPrivateKey("0x80acb3fa5b95638671fe39747571ccd82f971da8bd26545542edb81c53848552", fuelProvider);
     const script = new Script(this.predicate.bytecode, this.predicate.abi, accountFund);
     await script.provider.estimateTxDependencies(transactionRequest);
+    console.log(`account.solanaAccount`, account.solanaAccount);
     script.setConfigurableConstants({ SIGNER: account.solanaAccount });
     //const tx = script.functions.main(transactionRequest.witnesses.length);
     const tx = script.functions.main(1);
@@ -301,20 +295,18 @@ export class SolanaWalletConnector extends FuelConnector {
     const txID2 = await txRequest.getTransactionId(chainId);
     const txId2Clone1 = structuredClone(txID2);
     console.log(`txID2`, txId2Clone1);
-    //const u8TxId = arrayify(`${txID2}0000`);
-    const convertedTxId = `0x19457468657265756d205369676e6564204d6573736167653a0a333200000000${txID2.slice(2)}`;
-    const u8TxId = arrayify(convertedTxId);
+    const u8TxId = arrayify(txID2);
     console.log(`arrayify(txID2)`, u8TxId);
-    const test = nacl.sign.detached(u8TxId, base58.decode("3ozYXfVgcdYqPbtdzfSufrJY8QUtrhPkb3bCbfbN9koy24iwAPbeZWsFg8MX9s75LftJRWU8zMUokmZnK2Y7gQ23"));
+    const test = nacl.sign.detached(u8TxId, base58.decode("gvigzt9FYbKr3Y83LXPqLQaUQTecJj7ojhpawvfifiHutES51SHvLbkXfUFb6sBdgQDD5W1YH8ycqLhEVx5fWVQ"));
     console.log(`test`, test);
-    const signedMessage = await solanaProvider.signMessage(u8TxId);
+    console.log(`solanaProvider.signMessage`, solanaProvider.signMessage);
+    const signedMessagetemp = await solanaProvider.signMessage(u8TxId);
+    console.log(`signedMessagetemp`, signedMessagetemp.signature);
+    const signedMessage = await solanaProvider.signMessage(u8TxId, "hexadecimal");
     console.log(`signedMessage.signature`, signedMessage.signature);
     const signature = hexlify(signedMessage.signature);
     console.log(`signature`, signature);
     txRequest.witnesses.push(signature);
-    console.log(`txRequest 1`, structuredClone(txRequest));
-    const txId2Clone2 = await txRequest.getTransactionId(chainId);
-    console.log(`txID2`, txId2Clone2);
 
     await accountFund.populateTransactionWitnessesSignature(txRequest);
 
@@ -429,6 +421,7 @@ export const getPredicateAddress = memoize(
     predicateBytecode: BytesLike,
     predicateAbi: JsonAbi
   ): string => {
+    console.log(`solanaAddress`, solanaAddress);
     const configurable = {
       SIGNER: solanaAddress,
     };

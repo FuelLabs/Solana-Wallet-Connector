@@ -29,6 +29,9 @@ importers:
       '@fuels/wallet-connector-solana':
         specifier: workspace:*
         version: link:../../packages/wallet-connector-solana
+      '@solflare-wallet/sdk':
+        specifier: ^1.4.2
+        version: 1.4.2(@solana/web3.js@1.90.0)
       '@types/node':
         specifier: ^16.18.68
         version: 16.18.83
@@ -74,6 +77,9 @@ importers:
       '@solana/web3.js':
         specifier: ^1.90.0
         version: 1.90.0
+      '@solflare-wallet/sdk':
+        specifier: ^1.4.2
+        version: 1.4.2(@solana/web3.js@1.90.0)
       '@types/bs58':
         specifier: ^4.0.4
         version: 4.0.4
@@ -3394,6 +3400,17 @@ packages:
       - bufferutil
       - encoding
       - utf-8-validate
+    dev: false
+
+  /@solflare-wallet/sdk@1.4.2(@solana/web3.js@1.90.0):
+    resolution: {integrity: sha512-jrseNWipwl9xXZgrzwZF3hhL0eIVxuEtoZOSLmuPuef7FgHjstuTtNJAeT4icA7pzdDV4hZvu54pI2r2f7SmrQ==}
+    peerDependencies:
+      '@solana/web3.js': '*'
+    dependencies:
+      '@solana/web3.js': 1.90.0
+      bs58: 5.0.0
+      eventemitter3: 5.0.1
+      uuid: 9.0.1
     dev: false
 
   /@surma/rollup-plugin-off-main-thread@2.2.3:
@@ -6826,6 +6843,10 @@ packages:
 
   /eventemitter3@4.0.7:
     resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
+    dev: false
+
+  /eventemitter3@5.0.1:
+    resolution: {integrity: sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==}
     dev: false
 
   /events@3.3.0:

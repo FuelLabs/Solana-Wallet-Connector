@@ -33,9 +33,11 @@ import {
 } from 'fuels';
 import memoize from 'memoizee';
 
+import Solflare from "@solflare-wallet/sdk";
+
 import { predicates } from './predicateResources';
 import { scripts } from "./scriptResources"
-import { Keypair, Message, PublicKey, Transaction, VersionedMessage, VersionedTransaction } from '@solana/web3.js';
+import { Keypair, PublicKey } from '@solana/web3.js';
 import * as uint8arraytools from 'uint8array-tools';
 import nacl from "tweetnacl";
 import { decodeBase64, decodeUTF8 } from "tweetnacl-util";
@@ -46,11 +48,11 @@ type SolanaWalletConnectorConfig = {
   solanaProvider?: any;
 };
 
-export class SolanaWalletConnector extends FuelConnector {
+export class SolflareSolanaWalletConnector extends FuelConnector {
   solanaProvider: any | null = null;
   fuelProvider: Provider | null = null;
-  //private predicate: { abi: any; bytecode: Uint8Array };
-  private predicate: { abi: any; bytecode: string };
+  private predicate: { abi: any; bytecode: Uint8Array };
+  //private predicate: { abi: any; bytecode: string };
   private setupLock: boolean = false;
   private _currentAccount: string | null = null;
   private config: Required<SolanaWalletConnectorConfig>;
@@ -68,13 +70,14 @@ export class SolanaWalletConnector extends FuelConnector {
   constructor(config: SolanaWalletConnectorConfig = {}) {
     super();
     this.name = 'Solana wallet connector';
-    //this.predicate = predicates['verification-predicate'];
-    this.predicate = scripts['verification-script'];
+    this.predicate = predicates['verification-predicate'];
+    //this.predicate = scripts['verification-script'];
     this.installed = true;
     this.config = Object.assign(config, {
       fuelProvider: 'https://beta-5.fuel.network/graphql',
-      solanaProvider: (window as any).phantom?.solana,
+      solanaProvider: new Solflare(),
     });
+    console.log(`window`, this.config.solanaProvider);
   }
 
   /**
@@ -85,7 +88,7 @@ export class SolanaWalletConnector extends FuelConnector {
     if (!this.fuelProvider || !this.solanaProvider) {
       if (typeof window !== undefined) {
         this.solanaProvider = this.config.solanaProvider;
-        if (!this.solanaProvider?.isPhantom) {
+        if (!this.solanaProvider) {
           throw new Error('Solana provider not found');
         }
 
@@ -98,7 +101,7 @@ export class SolanaWalletConnector extends FuelConnector {
           throw new Error('Fuel provider not found');
         }
       } else {
-        throw new Error('window.phantom.solana not found');
+        throw new Error('window.okxwallet.solana not found');
       }
     }
 
@@ -116,14 +119,6 @@ export class SolanaWalletConnector extends FuelConnector {
   }
 
   async setupCurrentAccount() {
-    const { solanaProvider } = await this.getProviders();
-    // This is needed to maintain connection between page refreshes
-    try {
-      // Throws an error if the user has not connected yet
-      await solanaProvider.connect({ onlyIfTrusted: true });
-    } catch (err: any) {
-      console.log(`err`, err);
-    }
     const [currentAccount = null] = await this.accounts();
     this._currentAccount = currentAccount;
   }
@@ -194,82 +189,6 @@ export class SolanaWalletConnector extends FuelConnector {
     throw new Error('A predicate account cannot sign messages');
   }
 
-  // async sendTransaction(
-  //   address: string,
-  //   transaction: TransactionRequestLike
-  // ): Promise<string> {
-  //   if (!(await this.isConnected())) {
-  //     throw new Error('No connected accounts');
-  //   }
-
-  //   const { solanaProvider, fuelProvider } = await this.getProviders();
-  //   const chainId = fuelProvider.getChainId();
-  //   const account = await this.getPredicateFromAddress(address);
-  //   if (!account) {
-  //     throw new Error(`No account found for ${address}`);
-  //   }
-  //   const transactionRequest = transactionRequestify(transaction);
-
-  //   // Create a predicate and set the witness index to call in the predicate
-  //   const predicate = createPredicate(
-  //     account.solanaAccount,
-  //     fuelProvider,
-  //     this.predicate.bytecode,
-  //     this.predicate.abi
-  //   );
-  //   predicate.connect(fuelProvider);
-  //   console.log(`transactionRequest.witnesses.length`, transactionRequest.witnesses.length);
-  //   //predicate.setData(transactionRequest.witnesses.length);
-  //   predicate.setData(0);
-
-  //   // Attach missing inputs (including estimated predicate gas usage) / outputs to the request
-  //   //await predicate.provider.estimateTxDependencies(transactionRequest);
-  //   // const resources = await predicate.getResourcesToSpend([{ amount: 1, assetId: BaseAssetId }]);
-  //   // transactionRequest.addPredicateResources(resources, predicate);
-  //   const reqClone = structuredClone(transactionRequest);
-  //   console.log(`transactionRequest`, reqClone);
-  //   console.log("pred addr", Address.fromString("fuel187g6jy2zzyemaqx2gfxcw5hyut3czk8vswurk98ux2jukue6wywskqxxxq").toHexString());
-
-  //   // To each input of the request, attach the predicate and its data
-  //   const requestWithPredicateAttached =
-  //     predicate.populateTransactionPredicateData(transactionRequest);
-
-  //   const txId = requestWithPredicateAttached.getTransactionId(chainId);
-  //   console.log(`txId`, txId);
-  //   const encodedMessage = new TextEncoder().encode(txId);
-  //   const signedMessage = await solanaProvider.signMessage(encodedMessage);
-  //   const signature = `0x${uint8arraytools.toHex(signedMessage.signature)}`;
-  //   console.log(`signature`, signature);
-  
-  //   // We have a witness, attach it to the transaction for inspection / recovery via the predicate
-  //   // TODO: is below comment still relevant?
-  //   // TODO: note that there is a strange witness before we add out compact signature
-  //   //       it is [ 0x ] and we may need to update versions later if / when this is fixed
-  //   //transactionRequest.witnesses.push(signature);
-  //   transactionRequest.updateWitness(0, signature);
-
-  //   const transactionWithPredicateEstimated =
-  //     await fuelProvider.estimatePredicates(requestWithPredicateAttached);
-
-  //   console.log("obj", transactionWithPredicateEstimated)
-  //   console.log(`transactionWithPredicatesEstimated.toTransactionBytes()`, transactionWithPredicateEstimated.toTransactionBytes());
-  //   console.log(`transactionWithPredicatesEstimated.toTransactionBytes()`, hexlify(transactionWithPredicateEstimated.toTransactionBytes()));
-  //   const newClone = structuredClone(transactionRequest);
-  //   console.log(`newClone`, newClone);
-  //   const response = await predicate.sendTransaction(transactionRequest);
-  //   // const temp  = await fuelProvider.simulate(transactionWithPredicateEstimated);
-  //   // console.log(`temp`, temp);
-  //   // const response = await fuelProvider.operations.submit({
-  //   //   encodedTransaction: hexlify(
-  //   //     transactionWithPredicateEstimated.toTransactionBytes()
-  //   //   ),
-  //   // });
-  //   console.log("done")
-
-  //   return response.id;
-  //   //return response.submit.id;
-  // }
-
   async sendTransaction(
     address: string,
     transaction: TransactionRequestLike
@@ -279,58 +198,136 @@ export class SolanaWalletConnector extends FuelConnector {
     }
 
     const { solanaProvider, fuelProvider } = await this.getProviders();
+    const chainId = fuelProvider.getChainId();
     const account = await this.getPredicateFromAddress(address);
     if (!account) {
       throw new Error(`No account found for ${address}`);
     }
     const transactionRequest = transactionRequestify(transaction);
 
-    const accountFund = Wallet.fromPrivateKey("0x80acb3fa5b95638671fe39747571ccd82f971da8bd26545542edb81c53848552", fuelProvider);
-    const script = new Script(this.predicate.bytecode, this.predicate.abi, accountFund);
-    await script.provider.estimateTxDependencies(transactionRequest);
-    script.setConfigurableConstants({ SIGNER: account.solanaAccount });
-    //const tx = script.functions.main(transactionRequest.witnesses.length);
-    const tx = script.functions.main(1);
-    tx.txParams({ gasLimit: 100_000, gasPrice: 1 });
-    let txRequest = await tx.getTransactionRequest();
-    const chainId = await fuelProvider.getChainId();
-    const txId = await tx.getTransactionId(chainId);
+    // Create a predicate and set the witness index to call in the predicate
+    const predicate = createPredicate(
+      account.solanaAccount,
+      fuelProvider,
+      this.predicate.bytecode,
+      this.predicate.abi
+    );
+    predicate.connect(fuelProvider);
+    console.log(`transactionRequest.witnesses.length`, transactionRequest.witnesses.length);
+    //predicate.setData(transactionRequest.witnesses.length);
+    predicate.setData(0);
 
-    await accountFund.fund(txRequest, [{ amount: bn(1), assetId: BaseAssetId }], bn(500));
-    
-    const txID2 = await txRequest.getTransactionId(chainId);
-    const txId2Clone1 = structuredClone(txID2);
-    console.log(`txID2`, txId2Clone1);
-    //const u8TxId = arrayify(`${txID2}0000`);
-    const convertedTxId = `0x19457468657265756d205369676e6564204d6573736167653a0a333200000000${txID2.slice(2)}`;
-    const u8TxId = arrayify(convertedTxId);
+    // Attach missing inputs (including estimated predicate gas usage) / outputs to the request
+    //await predicate.provider.estimateTxDependencies(transactionRequest);
+    // const resources = await predicate.getResourcesToSpend([{ amount: 1, assetId: BaseAssetId }]);
+    // transactionRequest.addPredicateResources(resources, predicate);
+    const reqClone = structuredClone(transactionRequest);
+    console.log(`transactionRequest`, reqClone);
+    console.log("pred addr", Address.fromString("fuel187g6jy2zzyemaqx2gfxcw5hyut3czk8vswurk98ux2jukue6wywskqxxxq").toHexString());
+
+    // To each input of the request, attach the predicate and its data
+    const requestWithPredicateAttached =
+      predicate.populateTransactionPredicateData(transactionRequest);
+
+    const txId = requestWithPredicateAttached.getTransactionId(chainId);
+    console.log(`txId`, txId);
+    const u8TxId = arrayify(txId);
     console.log(`arrayify(txID2)`, u8TxId);
-    const test = nacl.sign.detached(u8TxId, base58.decode("3ozYXfVgcdYqPbtdzfSufrJY8QUtrhPkb3bCbfbN9koy24iwAPbeZWsFg8MX9s75LftJRWU8zMUokmZnK2Y7gQ23"));
+    const test = nacl.sign.detached(u8TxId, base58.decode("gvigzt9FYbKr3Y83LXPqLQaUQTecJj7ojhpawvfifiHutES51SHvLbkXfUFb6sBdgQDD5W1YH8ycqLhEVx5fWVQ"));
     console.log(`test`, test);
-    const signedMessage = await solanaProvider.signMessage(u8TxId);
-    console.log(`signedMessage.signature`, signedMessage.signature);
-    const signature = hexlify(signedMessage.signature);
+    console.log(`solanaProvider.signMessage`, solanaProvider.signMessage);
+    const signedMessage = await solanaProvider.signMessage(u8TxId, "hex");
+    console.log(`signedMessage.signature`, signedMessage);
+    const signature = hexlify(signedMessage);
     console.log(`signature`, signature);
-    txRequest.witnesses.push(signature);
-    console.log(`txRequest 1`, structuredClone(txRequest));
-    const txId2Clone2 = await txRequest.getTransactionId(chainId);
-    console.log(`txID2`, txId2Clone2);
+  
+    // We have a witness, attach it to the transaction for inspection / recovery via the predicate
+    // TODO: is below comment still relevant?
+    // TODO: note that there is a strange witness before we add out compact signature
+    //       it is [ 0x ] and we may need to update versions later if / when this is fixed
+    //transactionRequest.witnesses.push(signature);
+    transactionRequest.updateWitness(0, signature);
 
-    await accountFund.populateTransactionWitnessesSignature(txRequest);
+    const transactionWithPredicateEstimated =
+      await fuelProvider.estimatePredicates(requestWithPredicateAttached);
 
-    const response = await fuelProvider.operations.dryRun({
-          encodedTransaction: hexlify(
-            txRequest.toTransactionBytes()
-          ),
-    });
-    console.log(`response`, response);
-    const response2 = await fuelProvider.sendTransaction(txRequest);
-    const res = await response2.waitForResult();
-    console.log(`response2`, res);
-
+    console.log("obj", transactionWithPredicateEstimated)
+    console.log(`transactionWithPredicatesEstimated.toTransactionBytes()`, transactionWithPredicateEstimated.toTransactionBytes());
+    console.log(`transactionWithPredicatesEstimated.toTransactionBytes()`, hexlify(transactionWithPredicateEstimated.toTransactionBytes()));
+    const newClone = structuredClone(transactionRequest);
+    console.log(`newClone`, newClone);
+    const response = await predicate.sendTransaction(transactionRequest);
+    // const temp  = await fuelProvider.simulate(transactionWithPredicateEstimated);
+    // console.log(`temp`, temp);
+    // const response = await fuelProvider.operations.submit({
+    //   encodedTransaction: hexlify(
+    //     transactionWithPredicateEstimated.toTransactionBytes()
+    //   ),
+    // });
     console.log("done")
-    return res.id!;
+
+    return response.id;
+    //return response.submit.id;
   }
+
+  // async sendTransaction(
+  //   address: string,
+  //   transaction: TransactionRequestLike
+  // ): Promise<string> {
+  //   if (!(await this.isConnected())) {
+  //     throw new Error('No connected accounts');
+  //   }
+
+  //   const { solanaProvider, fuelProvider } = await this.getProviders();
+  //   const account = await this.getPredicateFromAddress(address);
+  //   if (!account) {
+  //     throw new Error(`No account found for ${address}`);
+  //   }
+  //   const transactionRequest = transactionRequestify(transaction);
+
+  //   const accountFund = Wallet.fromPrivateKey("0x80acb3fa5b95638671fe39747571ccd82f971da8bd26545542edb81c53848552", fuelProvider);
+  //   const script = new Script(this.predicate.bytecode, this.predicate.abi, accountFund);
+  //   await script.provider.estimateTxDependencies(transactionRequest);
+  //   console.log(`account.solanaAccount`, account.solanaAccount);
+  //   script.setConfigurableConstants({ SIGNER: account.solanaAccount });
+  //   //const tx = script.functions.main(transactionRequest.witnesses.length);
+  //   const tx = script.functions.main(1);
+  //   tx.txParams({ gasLimit: 100_000, gasPrice: 1 });
+  //   let txRequest = await tx.getTransactionRequest();
+  //   const chainId = await fuelProvider.getChainId();
+  //   const txId = await tx.getTransactionId(chainId);
+
+  //   await accountFund.fund(txRequest, [{ amount: bn(1), assetId: BaseAssetId }], bn(500));
+    
+  //   const txID2 = await txRequest.getTransactionId(chainId);
+  //   const txId2Clone1 = structuredClone(txID2);
+  //   console.log(`txID2`, txId2Clone1);
+  //   const u8TxId = arrayify(txID2);
+  //   console.log(`arrayify(txID2)`, u8TxId);
+  //   const test = nacl.sign.detached(u8TxId, base58.decode("gvigzt9FYbKr3Y83LXPqLQaUQTecJj7ojhpawvfifiHutES51SHvLbkXfUFb6sBdgQDD5W1YH8ycqLhEVx5fWVQ"));
+  //   console.log(`test`, test);
+  //   console.log(`solanaProvider.signMessage`, solanaProvider.signMessage);
+  //   const signedMessage = await solanaProvider.signMessage(u8TxId, "hex");
+  //   console.log(`signedMessage.signature`, signedMessage);
+  //   const signature = hexlify(signedMessage);
+  //   console.log(`signature`, signature);
+  //   txRequest.witnesses.push(signature);
+
+  //   await accountFund.populateTransactionWitnessesSignature(txRequest);
+
+  //   // const response = await fuelProvider.operations.dryRun({
+  //   //       encodedTransaction: hexlify(
+  //   //         txRequest.toTransactionBytes()
+  //   //       ),
+  //   // });
+  //   // console.log(`response`, response);
+  //   const response2 = await fuelProvider.sendTransaction(txRequest);
+  //   const res = await response2.waitForResult();
+  //   console.log(`response2`, res);
+
+  //   console.log("done")
+  //   return res.id!;
+  // }
 
   async currentAccount(): Promise<string | null> {
     if (!(await this.isConnected())) {
@@ -429,6 +426,7 @@ export const getPredicateAddress = memoize(
     predicateBytecode: BytesLike,
     predicateAbi: JsonAbi
   ): string => {
+    console.log(`solanaAddress`, solanaAddress);
     const configurable = {
       SIGNER: solanaAddress,
     };
