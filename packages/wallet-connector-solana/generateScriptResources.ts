@@ -6,19 +6,19 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const predicates = ['verification-script'];
+const scripts = ['verification-script'];
 
 let code = 'export const scripts = {\n';
 
-predicates.forEach((predicate) => {
-  const outputDirectory = `${__dirname}/../signature-verification/${predicate}/out/debug`;
-  const abiPath = `${outputDirectory}/${predicate}-abi.json`;
-  const bytecodePath = `${outputDirectory}/${predicate}.bin`;
+scripts.forEach((script) => {
+  const outputDirectory = `${__dirname}/../signature-verification/${script}/out/debug`;
+  const abiPath = `${outputDirectory}/${script}-abi.json`;
+  const bytecodePath = `${outputDirectory}/${script}.bin`;
 
   const abi = fs.readFileSync(abiPath, 'utf8');
   const bytecode = hexlify(fs.readFileSync(bytecodePath));
 
-  code += `  '${predicate}': {\n`;
+  code += `  '${script}': {\n`;
   code += `    abi: ${abi},\n`;
   code += `    bytecode: "${bytecode}"`;
   code += `  },\n}`;
