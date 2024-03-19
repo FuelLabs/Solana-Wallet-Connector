@@ -28,7 +28,7 @@ export const AccountItem = ({ address }: AccountItemProps) => {
         {!hasBalance && (
           <a
             href={`https://faucet-beta-5.fuel.network/?address=${address}`}
-            target="_blank"
+            target="_blank" rel="noreferrer"
           >
             <button>Get some coins</button>
           </a>

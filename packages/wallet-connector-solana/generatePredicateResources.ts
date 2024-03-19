@@ -37,4 +37,4 @@ function base64ToUint8Array(base64: string) {
 `;
 
 fs.writeFileSync(`${__dirname}/src/predicateResources.ts`, code);
-console.log('Generated');
+console.log('Generated'); // eslint-disable-line no-console

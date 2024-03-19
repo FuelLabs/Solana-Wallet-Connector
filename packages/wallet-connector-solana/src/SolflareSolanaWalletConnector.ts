@@ -1,47 +1,23 @@
-import {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-console */
+import type {
   Asset,
   ConnectorMetadata,
-  FuelConnector,
   Network,
   Version,
 } from '@fuel-wallet/sdk';
-import {
-  Address,
-  BytesLike,
-  InputValue,
-  JsonAbi,
-  Predicate,
-  Provider,
-  TransactionRequestLike,
-  arrayify,
-  hexlify,
-  transactionRequestify,
-  AbiMap,
-  getPredicateRoot,
-  Script,
-  Account,
-  ScriptTransactionRequest,
-  ScriptRequest,
-  Interface,
-  ReceiptType,
-  Signer,
-  TransactionResultReceipt,
-  ReceiptLogData,
-  bn,
-  BaseAssetId,
-  Wallet,
-} from 'fuels';
-import memoize from 'memoizee';
-
+import { FuelConnector } from '@fuel-wallet/sdk';
+import type { PublicKey } from '@solana/web3.js';
 import Solflare from '@solflare-wallet/sdk';
+import type { JsonAbi, TransactionRequestLike, AbiMap } from 'fuels';
+import { Provider, arrayify, hexlify, transactionRequestify } from 'fuels';
 
 import { predicates } from './predicateResources';
-import { scripts } from './scriptResources';
-import { Keypair, PublicKey } from '@solana/web3.js';
-import * as uint8arraytools from 'uint8array-tools';
-import nacl from 'tweetnacl';
-import { decodeBase64, decodeUTF8 } from 'tweetnacl-util';
-import base58 from 'bs58';
+import {
+  getPredicateAddress,
+  createPredicate,
+  solanaPublicKeyToHex,
+} from './utils';
 
 type SolanaWalletConnectorConfig = {
   fuelProvider?: Provider | string;
@@ -52,7 +28,6 @@ export class SolflareSolanaWalletConnector extends FuelConnector {
   solanaProvider: any | null = null;
   fuelProvider: Provider | null = null;
   private predicate: { abi: any; bytecode: Uint8Array };
-  //private predicate: { abi: any; bytecode: string };
   private setupLock: boolean = false;
   private _currentAccount: string | null = null;
   private config: Required<SolanaWalletConnectorConfig>;
@@ -85,7 +60,7 @@ export class SolflareSolanaWalletConnector extends FuelConnector {
 
   async getProviders() {
     if (!this.fuelProvider || !this.solanaProvider) {
-      if (typeof window !== undefined) {
+      if (typeof window !== "undefined") {
         this.solanaProvider = this.config.solanaProvider;
         if (!this.solanaProvider) {
           throw new Error('Solana provider not found');
@@ -184,7 +159,7 @@ export class SolflareSolanaWalletConnector extends FuelConnector {
     return false;
   }
 
-  async signMessage(address: string, message: string): Promise<string> {
+  async signMessage(_0: string, _1: string): Promise<string> {
     throw new Error('A predicate account cannot sign messages');
   }
 
@@ -253,22 +228,22 @@ export class SolflareSolanaWalletConnector extends FuelConnector {
     return fuelAccount;
   }
 
-  async addAssets(assets: Asset[]): Promise<boolean> {
+  async addAssets(_: Asset[]): Promise<boolean> {
     console.warn('A predicate account cannot add assets');
     return false;
   }
 
-  async addAsset(asset: Asset): Promise<boolean> {
+  async addAsset(_: Asset): Promise<boolean> {
     console.warn('A predicate accout cannot add an asset');
     return false;
   }
 
-  async addNetwork(networkUrl: string): Promise<boolean> {
+  async addNetwork(_: string): Promise<boolean> {
     console.warn('A predicate account cannot ad a network');
     return false;
   }
 
-  async selectNetwork(network: Network): Promise<boolean> {
+  async selectNetwork(_: Network): Promise<boolean> {
     // TODO: allow selecting networks once mainnet is released?
     console.warn('A predicate account cannot select a network');
     return false;
@@ -284,16 +259,16 @@ export class SolflareSolanaWalletConnector extends FuelConnector {
     return { url: fuelProvider.url, chainId: chainId };
   }
 
-  async addAbi(abiMap: AbiMap): Promise<boolean> {
+  async addAbi(_: AbiMap): Promise<boolean> {
     console.warn('Cannot add an ABI to a predicate account');
     return false;
   }
 
-  async getAbi(contractId: string): Promise<JsonAbi> {
+  async getAbi(_: string): Promise<JsonAbi> {
     throw Error('Cannot get contractId ABI for a predicate');
   }
 
-  async hasAbi(contractId: string): Promise<boolean> {
+  async hasAbi(_: string): Promise<boolean> {
     console.warn('A predicate account cannot have an ABI');
     return false;
   }
@@ -324,51 +299,3 @@ export class SolflareSolanaWalletConnector extends FuelConnector {
     return accounts;
   }
 }
-
-export const getPredicateAddress = memoize(
-  (
-    solanaAddress: string,
-    predicateBytecode: BytesLike,
-    predicateAbi: JsonAbi
-  ): string => {
-    console.log(`solanaAddress`, solanaAddress);
-    const configurable = {
-      SIGNER: solanaAddress,
-    };
-
-    // @ts-ignore
-    const { predicateBytes } = Predicate.processPredicateData(
-      predicateBytecode,
-      predicateAbi,
-      configurable
-    );
-    const address = Address.fromB256(getPredicateRoot(predicateBytes));
-    return address.toString();
-  }
-);
-
-export const createPredicate = memoize(
-  (
-    solanaAddress: string,
-    provider: Provider,
-    predicateBytecode: BytesLike,
-    predicateAbi: JsonAbi
-  ): Predicate<InputValue[]> => {
-    const configurable = {
-      SIGNER: solanaAddress,
-    };
-
-    const predicate = new Predicate(
-      arrayify(predicateBytecode),
-      provider,
-      predicateAbi,
-      configurable
-    );
-
-    return predicate;
-  }
-);
-
-const solanaPublicKeyToHex = (publicKey: PublicKey) => {
-  return hexlify(publicKey.toBytes());
-};

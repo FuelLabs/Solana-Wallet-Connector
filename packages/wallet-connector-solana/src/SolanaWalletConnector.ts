@@ -1,22 +1,36 @@
-import {
+/* eslint-disable eslint-comments/no-unlimited-disable */
+// TODO: remove once we get the phantom wallet integration to work.
+/* eslint-disable */
+import type {
   Asset,
   ConnectorMetadata,
-  FuelConnector,
   Network,
   Version,
 } from '@fuel-wallet/sdk';
+import { FuelConnector } from '@fuel-wallet/sdk';
+import type { PublicKey } from '@solana/web3.js';
 import {
-  Address,
+  Keypair,
+  Message,
+  Transaction,
+  VersionedMessage,
+  VersionedTransaction,
+} from '@solana/web3.js';
+import base58 from 'bs58';
+import type {
   BytesLike,
   InputValue,
   JsonAbi,
+  TransactionRequestLike,
+  AbiMap,
+} from 'fuels';
+import {
+  Address,
   Predicate,
   Provider,
-  TransactionRequestLike,
   arrayify,
   hexlify,
   transactionRequestify,
-  AbiMap,
   getPredicateRoot,
   Script,
   Account,
@@ -32,21 +46,17 @@ import {
   Wallet,
 } from 'fuels';
 import memoize from 'memoizee';
+import nacl from 'tweetnacl';
+import { decodeBase64, decodeUTF8 } from 'tweetnacl-util';
+import * as uint8arraytools from 'uint8array-tools';
 
 import { predicates } from './predicateResources';
 import { scripts } from './scriptResources';
 import {
-  Keypair,
-  Message,
-  PublicKey,
-  Transaction,
-  VersionedMessage,
-  VersionedTransaction,
-} from '@solana/web3.js';
-import * as uint8arraytools from 'uint8array-tools';
-import nacl from 'tweetnacl';
-import { decodeBase64, decodeUTF8 } from 'tweetnacl-util';
-import base58 from 'bs58';
+  createPredicate,
+  getPredicateAddress,
+  solanaPublicKeyToHex,
+} from './utils';
 
 type SolanaWalletConnectorConfig = {
   fuelProvider?: Provider | string;
@@ -306,7 +316,7 @@ export class SolanaWalletConnector extends FuelConnector {
     //const tx = script.functions.main(transactionRequest.witnesses.length);
     const tx = script.functions.main(1);
     tx.txParams({ gasLimit: 100_000, gasPrice: 1 });
-    let txRequest = await tx.getTransactionRequest();
+    const txRequest = await tx.getTransactionRequest();
     const chainId = await fuelProvider.getChainId();
     const txId = await tx.getTransactionId(chainId);
 
@@ -443,50 +453,3 @@ export class SolanaWalletConnector extends FuelConnector {
     return accounts;
   }
 }
-
-export const getPredicateAddress = memoize(
-  (
-    solanaAddress: string,
-    predicateBytecode: BytesLike,
-    predicateAbi: JsonAbi
-  ): string => {
-    const configurable = {
-      SIGNER: solanaAddress,
-    };
-
-    // @ts-ignore
-    const { predicateBytes } = Predicate.processPredicateData(
-      predicateBytecode,
-      predicateAbi,
-      configurable
-    );
-    const address = Address.fromB256(getPredicateRoot(predicateBytes));
-    return address.toString();
-  }
-);
-
-export const createPredicate = memoize(
-  (
-    solanaAddress: string,
-    provider: Provider,
-    predicateBytecode: BytesLike,
-    predicateAbi: JsonAbi
-  ): Predicate<InputValue[]> => {
-    const configurable = {
-      SIGNER: solanaAddress,
-    };
-
-    const predicate = new Predicate(
-      arrayify(predicateBytecode),
-      provider,
-      predicateAbi,
-      configurable
-    );
-
-    return predicate;
-  }
-);
-
-const solanaPublicKeyToHex = (publicKey: PublicKey) => {
-  return hexlify(publicKey.toBytes());
-};

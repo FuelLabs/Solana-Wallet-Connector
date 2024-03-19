@@ -25,4 +25,4 @@ predicates.forEach((predicate) => {
 });
 
 fs.writeFileSync(`${__dirname}/src/scriptResources.ts`, code);
-console.log('Generated');
+console.log('Generated'); // eslint-disable-line no-console
