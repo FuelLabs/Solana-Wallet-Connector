@@ -12,6 +12,7 @@ import Solflare from '@solflare-wallet/sdk';
 import type { JsonAbi, TransactionRequestLike, AbiMap } from 'fuels';
 import { Provider, arrayify, hexlify, transactionRequestify } from 'fuels';
 
+import { SolflareIcon } from './SolflareIcon';
 import { predicates } from './resources';
 import {
   getPredicateAddress,
@@ -34,11 +35,11 @@ export class SolflareSolanaWalletConnector extends FuelConnector {
 
   // metadata placeholder
   metadata: ConnectorMetadata = {
-    image: '', // TODO: add image of Solana or Phantom
+    image: SolflareIcon,
     install: {
       action: 'Install',
       description: 'Install a solana wallet to connect to Fuel',
-      link: 'https://solana.com/ecosystem/explore?categories=wallet',
+      link: 'https://solana.com/ecosystem/solflare?categories=wallet&nextInternalLocale=en',
     },
   };
 
@@ -59,7 +60,7 @@ export class SolflareSolanaWalletConnector extends FuelConnector {
 
   async getProviders() {
     if (!this.fuelProvider || !this.solanaProvider) {
-      if (typeof window !== "undefined") {
+      if (typeof window !== 'undefined') {
         this.solanaProvider = this.config.solanaProvider;
         if (!this.solanaProvider) {
           throw new Error('Solana provider not found');
@@ -93,16 +94,9 @@ export class SolflareSolanaWalletConnector extends FuelConnector {
 
   async setupCurrentAccount() {
     const { solanaProvider } = await this.getProviders();
-    console.log(`solanaProvider`, solanaProvider);
-    try {
-      const temp = await solanaProvider.detectWallet();
-      if (temp) {
-       const res = await this.connect();
-       console.log(`res`, res);
-      }
-      console.log(`temp`, temp);
-    } catch (error) {
-      console.log(`error`, error);
+    const isWalletDetected = await solanaProvider.detectWallet();
+    if (isWalletDetected) {
+      await this.connect();
     }
     const [currentAccount = null] = await this.accounts();
     console.log(`currentAccount`, currentAccount);
