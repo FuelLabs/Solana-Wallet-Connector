@@ -50,8 +50,7 @@ import nacl from 'tweetnacl';
 import { decodeBase64, decodeUTF8 } from 'tweetnacl-util';
 import * as uint8arraytools from 'uint8array-tools';
 
-import { predicates } from './predicateResources';
-import { scripts } from './scriptResources';
+import { predicates, scripts } from './resources';
 import {
   createPredicate,
   getPredicateAddress,

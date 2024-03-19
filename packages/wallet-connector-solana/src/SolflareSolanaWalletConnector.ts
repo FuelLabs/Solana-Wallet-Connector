@@ -12,7 +12,7 @@ import Solflare from '@solflare-wallet/sdk';
 import type { JsonAbi, TransactionRequestLike, AbiMap } from 'fuels';
 import { Provider, arrayify, hexlify, transactionRequestify } from 'fuels';
 
-import { predicates } from './predicateResources';
+import { predicates } from './resources';
 import {
   getPredicateAddress,
   createPredicate,

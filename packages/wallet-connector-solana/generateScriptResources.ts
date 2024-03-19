@@ -24,5 +24,5 @@ predicates.forEach((predicate) => {
   code += `  },\n}`;
 });
 
-fs.writeFileSync(`${__dirname}/src/scriptResources.ts`, code);
+fs.writeFileSync(`${__dirname}/src/resources/scriptResources.ts`, code);
 console.log('Generated'); // eslint-disable-line no-console
