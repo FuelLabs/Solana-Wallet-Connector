@@ -6,7 +6,7 @@ export const ContractCounter = () => {
   const { isConnected, isFetching } = useIsConnected();
 
   return (
-    <div>
+    <div className='Counter'>
       <h3>
         {isFetching ? "Loading..." : isLoading
           ? 'Loading count...'

@@ -1,5 +1,6 @@
-import { useIsConnected } from '@fuels/react';
-import './App.css';
+import { useConnectUI, useIsConnected } from '@fuels/react';
+
+import './styles/App.css';
 import { ContractCounter } from './components/CounterContract';
 import { COUNTER_CONTRACT_ID } from './config';
 import { Connection } from './components/Connection';
@@ -8,15 +9,16 @@ import { AccountItems } from './components/AccountItems';
 
 function App() {
   const { isConnected } = useIsConnected();
+  const { theme } = useConnectUI();
 
   return (
-    <div className="App">
+    <div className="App" data-theme={theme}>
       <Connection />
       <div>
         <Info />
         {isConnected && <AccountItems />}
         <ContractCounter />
-        <div>
+        <div className='BottomInfo'>
           {isConnected && (
             <>
               <p>

@@ -5,7 +5,7 @@ export const Info = () => {
   const { isConnected } = useIsConnected();
 
   return (
-    <>
+    <div className='Info'>
       {isConnected && (
         <>
           <p>
@@ -21,7 +21,7 @@ export const Info = () => {
           </p>
         </>
       )}
-      {isError && <p>{error?.message}</p>}
-    </>
+      {isError && <p className='Error'>{error?.message}</p>}
+    </div>
   );
 };

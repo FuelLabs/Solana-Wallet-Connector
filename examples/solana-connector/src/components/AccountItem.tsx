@@ -1,7 +1,10 @@
 import { useBalance } from '@fuels/react';
+
 import { DEFAULT_AMOUNT } from '../config';
 import { useTransfer } from '../hooks/useTransfer';
 import { useIncrement } from '../hooks/useIncrement';
+import "../styles/App.css";
+import "../styles/Button.css";
 
 type AccountItemProps = {
   address: string;
@@ -15,8 +18,8 @@ export const AccountItem = ({ address }: AccountItemProps) => {
   const hasBalance = balance && balance.gte(DEFAULT_AMOUNT);
 
   return (
-    <div>
-      <div>
+    <div className='AccountItem'>
+      <div className='AccountColumns'>
         <span>
           <b>Account:</b> {address}{' '}
         </span>
@@ -24,7 +27,7 @@ export const AccountItem = ({ address }: AccountItemProps) => {
           <b>Balance:</b> {balance?.format() || '0'} ETH
         </span>
       </div>
-      <div>
+      <div className='accountActions'>
         {!hasBalance && (
           <a
             href={`https://faucet-beta-5.fuel.network/?address=${address}`}
