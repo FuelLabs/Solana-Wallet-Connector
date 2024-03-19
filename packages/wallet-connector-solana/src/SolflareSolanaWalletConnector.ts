@@ -46,7 +46,6 @@ export class SolflareSolanaWalletConnector extends FuelConnector {
     super();
     this.name = 'Solana wallet connector';
     this.predicate = predicates['verification-predicate'];
-    //this.predicate = scripts['verification-script'];
     this.installed = true;
     this.config = Object.assign(config, {
       fuelProvider: 'https://beta-5.fuel.network/graphql',
@@ -75,7 +74,7 @@ export class SolflareSolanaWalletConnector extends FuelConnector {
           throw new Error('Fuel provider not found');
         }
       } else {
-        throw new Error('window.okxwallet.solana not found');
+        throw new Error('Solflare not found');
       }
     }
 
@@ -88,12 +87,25 @@ export class SolflareSolanaWalletConnector extends FuelConnector {
   async setup() {
     if (this.setupLock) return;
     this.setupLock = true;
-    await this.setupCurrentAccount();
     await this.setupEventBridge();
+    await this.setupCurrentAccount();
   }
 
   async setupCurrentAccount() {
+    const { solanaProvider } = await this.getProviders();
+    console.log(`solanaProvider`, solanaProvider);
+    try {
+      const temp = await solanaProvider.detectWallet();
+      if (temp) {
+       const res = await this.connect();
+       console.log(`res`, res);
+      }
+      console.log(`temp`, temp);
+    } catch (error) {
+      console.log(`error`, error);
+    }
     const [currentAccount = null] = await this.accounts();
+    console.log(`currentAccount`, currentAccount);
     this._currentAccount = currentAccount;
   }
 

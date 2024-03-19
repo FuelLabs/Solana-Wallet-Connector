@@ -1,14 +1,20 @@
+import { useIsConnected } from '@fuels/react';
 import { useGetCount } from '../hooks/useGetCount';
 
 export const ContractCounter = () => {
   const { count, isLoading, isError, error } = useGetCount();
+  const { isConnected, isFetching } = useIsConnected();
 
   return (
     <div>
       <h3>
-        {isLoading
+        {isFetching ? "Loading..." : isLoading
           ? 'Loading count...'
-          : `Count: ${count?.toString() || (isError ? error : 'connect wallet to get count')}`}
+          : !!count && isConnected
+            ? `Count: ${count?.toString()}`
+            : isError
+              ? error as any
+              : 'Connect wallet to get count'}
       </h3>
     </div>
   );

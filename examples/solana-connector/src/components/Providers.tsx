@@ -1,8 +1,6 @@
 import { ReactNode } from 'react';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { FuelProvider } from '@fuels/react';
-//import { OkxSolanaWalletConnector } from '@fuels/wallet-connector-solana';
-//import { SolanaWalletConnector } from '@fuels/wallet-connector-solana';
 import { SolflareSolanaWalletConnector } from '@fuels/wallet-connector-solana';
 
 type ProvidersProps = {
