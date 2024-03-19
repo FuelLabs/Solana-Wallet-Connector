@@ -29,16 +29,23 @@ import {
   ReceiptLogData,
   bn,
   BaseAssetId,
-  Wallet
+  Wallet,
 } from 'fuels';
 import memoize from 'memoizee';
 
 import { predicates } from './predicateResources';
-import { scripts } from "./scriptResources"
-import { Keypair, Message, PublicKey, Transaction, VersionedMessage, VersionedTransaction } from '@solana/web3.js';
+import { scripts } from './scriptResources';
+import {
+  Keypair,
+  Message,
+  PublicKey,
+  Transaction,
+  VersionedMessage,
+  VersionedTransaction,
+} from '@solana/web3.js';
 import * as uint8arraytools from 'uint8array-tools';
-import nacl from "tweetnacl";
-import { decodeBase64, decodeUTF8 } from "tweetnacl-util";
+import nacl from 'tweetnacl';
+import { decodeBase64, decodeUTF8 } from 'tweetnacl-util';
 import base58 from 'bs58';
 
 type SolanaWalletConnectorConfig = {
@@ -240,7 +247,7 @@ export class SolanaWalletConnector extends FuelConnector {
   //   const signedMessage = await solanaProvider.signMessage(encodedMessage);
   //   const signature = `0x${uint8arraytools.toHex(signedMessage.signature)}`;
   //   console.log(`signature`, signature);
-  
+
   //   // We have a witness, attach it to the transaction for inspection / recovery via the predicate
   //   // TODO: is below comment still relevant?
   //   // TODO: note that there is a strange witness before we add out compact signature
@@ -285,8 +292,15 @@ export class SolanaWalletConnector extends FuelConnector {
     }
     const transactionRequest = transactionRequestify(transaction);
 
-    const accountFund = Wallet.fromPrivateKey("0x80acb3fa5b95638671fe39747571ccd82f971da8bd26545542edb81c53848552", fuelProvider);
-    const script = new Script(this.predicate.bytecode, this.predicate.abi, accountFund);
+    const accountFund = Wallet.fromPrivateKey(
+      '0x80acb3fa5b95638671fe39747571ccd82f971da8bd26545542edb81c53848552',
+      fuelProvider
+    );
+    const script = new Script(
+      this.predicate.bytecode,
+      this.predicate.abi,
+      accountFund
+    );
     await script.provider.estimateTxDependencies(transactionRequest);
     script.setConfigurableConstants({ SIGNER: account.solanaAccount });
     //const tx = script.functions.main(transactionRequest.witnesses.length);
@@ -296,8 +310,12 @@ export class SolanaWalletConnector extends FuelConnector {
     const chainId = await fuelProvider.getChainId();
     const txId = await tx.getTransactionId(chainId);
 
-    await accountFund.fund(txRequest, [{ amount: bn(1), assetId: BaseAssetId }], bn(500));
-    
+    await accountFund.fund(
+      txRequest,
+      [{ amount: bn(1), assetId: BaseAssetId }],
+      bn(500)
+    );
+
     const txID2 = await txRequest.getTransactionId(chainId);
     const txId2Clone1 = structuredClone(txID2);
     console.log(`txID2`, txId2Clone1);
@@ -305,7 +323,12 @@ export class SolanaWalletConnector extends FuelConnector {
     const convertedTxId = `0x19457468657265756d205369676e6564204d6573736167653a0a333200000000${txID2.slice(2)}`;
     const u8TxId = arrayify(convertedTxId);
     console.log(`arrayify(txID2)`, u8TxId);
-    const test = nacl.sign.detached(u8TxId, base58.decode("3ozYXfVgcdYqPbtdzfSufrJY8QUtrhPkb3bCbfbN9koy24iwAPbeZWsFg8MX9s75LftJRWU8zMUokmZnK2Y7gQ23"));
+    const test = nacl.sign.detached(
+      u8TxId,
+      base58.decode(
+        '3ozYXfVgcdYqPbtdzfSufrJY8QUtrhPkb3bCbfbN9koy24iwAPbeZWsFg8MX9s75LftJRWU8zMUokmZnK2Y7gQ23'
+      )
+    );
     console.log(`test`, test);
     const signedMessage = await solanaProvider.signMessage(u8TxId);
     console.log(`signedMessage.signature`, signedMessage.signature);
@@ -319,16 +342,14 @@ export class SolanaWalletConnector extends FuelConnector {
     await accountFund.populateTransactionWitnessesSignature(txRequest);
 
     const response = await fuelProvider.operations.dryRun({
-          encodedTransaction: hexlify(
-            txRequest.toTransactionBytes()
-          ),
+      encodedTransaction: hexlify(txRequest.toTransactionBytes()),
     });
     console.log(`response`, response);
     const response2 = await fuelProvider.sendTransaction(txRequest);
     const res = await response2.waitForResult();
     console.log(`response2`, res);
 
-    console.log("done")
+    console.log('done');
     return res.id!;
   }
 

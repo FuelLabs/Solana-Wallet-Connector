@@ -34,14 +34,17 @@ export const AccountItem = ({ address }: AccountItemProps) => {
           </a>
         )}
         <button
-        onClick={() => increment.mutate()}
-        disabled={increment.isLoading || !hasBalance}
+          onClick={() => increment.mutate()}
+          disabled={increment.isLoading || !balance?.gt(0)}
         >
           {increment.isLoading
             ? 'Incrementing...'
             : 'Increment the counter on the contract'}
         </button>
-        <button onClick={() => transfer.mutate()} disabled={transfer.isLoading || !hasBalance}>
+        <button
+          onClick={() => transfer.mutate()}
+          disabled={transfer.isLoading || !hasBalance}
+        >
           {transfer.isLoading
             ? 'Transferring...'
             : `Transfer ${DEFAULT_AMOUNT.format()} ETH`}

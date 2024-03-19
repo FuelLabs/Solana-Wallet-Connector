@@ -3,6 +3,9 @@ import { DEFAULT_ADDRESS, DEFAULT_AMOUNT } from '../config';
 import { Address, BaseAssetId } from 'fuels';
 import { useWallet } from '@fuels/react';
 
+import { queryClient } from '../components/Providers';
+import { DEMO_QUERY_KEYS } from '../config';
+
 export const useTransfer = (senderAddress: string) => {
   const { wallet } = useWallet(senderAddress);
 
@@ -24,8 +27,12 @@ export const useTransfer = (senderAddress: string) => {
       return result;
     },
     {
-      onError: (error: any) => {
-        alert(error.message);
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(DEMO_QUERY_KEYS.count);
+      },
+      onError: async (error: any) => {
+        await queryClient.invalidateQueries(DEMO_QUERY_KEYS.count);
+        console.error(error);
       },
     }
   );

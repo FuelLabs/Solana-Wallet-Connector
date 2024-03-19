@@ -29,18 +29,18 @@ import {
   ReceiptLogData,
   bn,
   BaseAssetId,
-  Wallet
+  Wallet,
 } from 'fuels';
 import memoize from 'memoizee';
 
-import Solflare from "@solflare-wallet/sdk";
+import Solflare from '@solflare-wallet/sdk';
 
 import { predicates } from './predicateResources';
-import { scripts } from "./scriptResources"
+import { scripts } from './scriptResources';
 import { Keypair, PublicKey } from '@solana/web3.js';
 import * as uint8arraytools from 'uint8array-tools';
-import nacl from "tweetnacl";
-import { decodeBase64, decodeUTF8 } from "tweetnacl-util";
+import nacl from 'tweetnacl';
+import { decodeBase64, decodeUTF8 } from 'tweetnacl-util';
 import base58 from 'bs58';
 
 type SolanaWalletConnectorConfig = {
@@ -220,9 +220,9 @@ export class SolflareSolanaWalletConnector extends FuelConnector {
 
     const txId = requestWithPredicateAttached.getTransactionId(chainId);
     const u8TxId = arrayify(txId);
-    const signedMessage = await solanaProvider.signMessage(u8TxId, "hex");
+    const signedMessage = await solanaProvider.signMessage(u8TxId, 'hex');
     const signature = hexlify(signedMessage);
-  
+
     // We have a witness, attach it to the transaction for inspection / recovery via the predicate
     // TODO: is below comment still relevant?
     // TODO: note that there is a strange witness before we add out compact signature

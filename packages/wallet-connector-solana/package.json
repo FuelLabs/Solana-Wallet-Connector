@@ -36,6 +36,8 @@
     "uint8array-tools": "^0.0.7"
   },
   "devDependencies": {
+    "@fuels/eslint-plugin": "^0.17.0",
+    "@fuels/prettier-config": "^0.15.2",
     "@fuels/ts-config": "^0.15.2",
     "@types/chai": "^4.3.11",
     "@types/chai-as-promised": "^7.1.8",
@@ -44,8 +46,11 @@
     "@types/node": "^20.11.9",
     "chai": "^4.3.10",
     "chai-as-promised": "^7.1.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
     "mocha": "^10.3.0",
-    "prettier": "^3.1.1",
+    "prettier": "^3.2.5",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
     "tsx": "^4.7.0",

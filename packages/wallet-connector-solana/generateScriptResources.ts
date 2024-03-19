@@ -18,7 +18,6 @@ predicates.forEach((predicate) => {
   const abi = fs.readFileSync(abiPath, 'utf8');
   const bytecode = hexlify(fs.readFileSync(bytecodePath));
 
-
   code += `  '${predicate}': {\n`;
   code += `    abi: ${abi},\n`;
   code += `    bytecode: "${bytecode}"`;
