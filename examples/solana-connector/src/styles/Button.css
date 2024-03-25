@@ -1,0 +1,18 @@
+button {
+  all: unset;
+  border: 1px solid black;
+  padding: 10px 20px;
+  border-radius: 4px;
+  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+button:active {
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2);
+}
+
+button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}

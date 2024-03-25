@@ -1,7 +1,8 @@
 use fuels::{
-    prelude::{abigen, launch_provider_and_get_wallet}, tx::Witness, types::{transaction::{Transaction, TxPolicies}, Bits256}
+    prelude::{abigen, launch_provider_and_get_wallet}, tx::{Witness, TxId, Bytes32}, types::{transaction::{Transaction, TxPolicies}, Bits256, Bytes},
 };
 use solana_sdk::signer::{keypair::Keypair, Signer};
+use std::str::FromStr;
 
 const SCRIPT_BINARY_PATH: &str = "./out/debug/verification-script.bin";
 
@@ -33,8 +34,24 @@ async fn valid_signature_returns_true_for_validating() {
     let consensus_parameters = fuel_wallet.provider().unwrap().consensus_parameters();
     let tx_id = tx.id(consensus_parameters.chain_id);
 
+    println!("tx_id {:#?}", tx_id);
+    println!("tx_id {:#?}", *tx_id);
+    println!("tx_id {:#?}", tx_id.to_string().len());
+    println!("tx_id {:#?}", (*tx_id).len());
+
     let signature = solana_keypair.sign_message(&(*tx_id));
     let signature: [u8; 64] = signature.into();
+
+    let new_signer = Keypair::from_base58_string("3ozYXfVgcdYqPbtdzfSufrJY8QUtrhPkb3bCbfbN9koy24iwAPbeZWsFg8MX9s75LftJRWU8zMUokmZnK2Y7gQ23");
+    let test_tx_id = "0x73770495abeca393c0c0507c2f96f8f2ee3589c429683ecf7bf2a7b055962f2b";
+    let test_tx_id = TxId::from(Bytes32::from_str(test_tx_id).unwrap());
+    println!("test_tx_id {:#?}", test_tx_id);
+    println!("test_tx_id.len() {:#?}", test_tx_id.len());
+    let new_sig = new_signer.sign_message(&(*test_tx_id));
+    println!("new_sig {:#?}", new_sig);
+    let new_sig: [u8; 64] = new_sig.into();
+    println!("new_sig {:#?}", new_sig);
+    println!("new_sig.len() {:#?}", new_sig.len());
 
     // Add the signed data as a witness onto the tx
     tx.append_witness(Witness::from(signature.to_vec())).unwrap();
@@ -57,6 +74,7 @@ async fn valid_signature_returns_true_for_validating() {
 
     let response = script_call_handler.get_response(receipts).unwrap();
 
+    assert!(false);
     assert!(response.value);
 }
 
