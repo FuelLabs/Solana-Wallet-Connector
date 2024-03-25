@@ -93,11 +93,11 @@ export class SolflareSolanaWalletConnector extends FuelConnector {
   }
 
   async setupCurrentAccount() {
-    const { solanaProvider } = await this.getProviders();
-    const isWalletDetected = await solanaProvider.detectWallet();
-    if (isWalletDetected) {
-      await this.connect();
-    }
+    //const { solanaProvider } = await this.getProviders();
+    //const isWalletDetected = await solanaProvider.detectWallet();
+    // if (isWalletDetected) {
+    //   await this.connect();
+    // }
     const [currentAccount = null] = await this.accounts();
     console.log(`currentAccount`, currentAccount);
     this._currentAccount = currentAccount;
