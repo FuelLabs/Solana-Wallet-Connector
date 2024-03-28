@@ -1,0 +1,63 @@
+{
+  "name": "@fuels/wallet-connector-solana",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/wallet-connector-solana.umd.cjs",
+  "module": "./dist/wallet-connector-solana.js",
+  "exports": {
+    ".": {
+      "import": "./dist/wallet-connector-solana.js",
+      "require": "./dist/wallet-connector-solana.umd.cjs"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build:resources": "tsx generatePredicateResources.ts",
+    "build:script:resources": "tsx generateScriptResources.ts",
+    "build": "tsc && vite build",
+    "fmt": "prettier --config .prettierrc 'src/*.ts' 'test/*.ts' --write",
+    "test": "run-s build:resources && mocha --node-option experimental-loader=ts-node/esm --node-option experimental-specifier-resolution=node --require ts-node/register --require @fuel-ts/account --timeout 10000 ./test/*.test.ts"
+  },
+  "dependencies": {
+    "@fuel-ts/account": "0.74.0",
+    "@fuel-wallet/sdk": "0.15.2",
+    "@fuel-wallet/types": "0.15.2",
+    "@solana/web3.js": "^1.90.0",
+    "@solflare-wallet/sdk": "^1.4.2",
+    "@types/bs58": "^4.0.4",
+    "bs58": "^5.0.0",
+    "fuels": "^0.74.0",
+    "json-rpc-2.0": "^1.7.0",
+    "memoizee": "^0.4.15",
+    "tweetnacl": "^1.0.3",
+    "tweetnacl-util": "^0.15.1",
+    "uint8array-tools": "^0.0.7"
+  },
+  "devDependencies": {
+    "@fuels/eslint-plugin": "^0.17.0",
+    "@fuels/prettier-config": "^0.15.2",
+    "@fuels/ts-config": "^0.15.2",
+    "@types/chai": "^4.3.11",
+    "@types/chai-as-promised": "^7.1.8",
+    "@types/memoizee": "^0.4.11",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.11.9",
+    "chai": "^4.3.10",
+    "chai-as-promised": "^7.1.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
+    "mocha": "^10.3.0",
+    "prettier": "^3.2.5",
+    "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.7.0",
+    "typescript": "~5.2.2",
+    "vite": "^5.0.10",
+    "vite-plugin-dts": "^3.6.4",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  }
+}

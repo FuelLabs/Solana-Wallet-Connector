@@ -1,4 +1,4 @@
-script;
+predicate;
 
 use std::{
     b512::B512,

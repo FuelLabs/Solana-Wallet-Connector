@@ -1,0 +1,53 @@
+{
+  "name": "solana-connector",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@fuel-wallet/sdk": "0.15.2",
+    "@fuels/react": "0.15.2",
+    "@fuels/wallet-connector-solana": "workspace:*",
+    "@solflare-wallet/sdk": "^1.4.2",
+    "@types/node": "^16.18.68",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "fuels": "0.74.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-query": "^3.39.3",
+    "react-scripts": "5.0.1",
+    "typescript": "^4.9.5",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@fuels/eslint-plugin": "^0.17.0",
+    "@fuels/prettier-config": "^0.15.2",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
+    "prettier": "^3.1.1"
+  }
+}
