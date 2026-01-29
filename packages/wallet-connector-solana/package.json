@@ -46,7 +46,7 @@
     "@types/node": "^20.11.9",
     "chai": "^4.3.10",
     "chai-as-promised": "^7.1.1",
-    "eslint": "^8.57.0",
+    "eslint": "^9.26.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "mocha": "^10.3.0",
